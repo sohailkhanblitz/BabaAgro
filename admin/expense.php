@@ -1,7 +1,6 @@
 <?php
 session_start();
 include 'db_connection.php';  // Includes the database connection
-
 $logged_mobile = $_SESSION['mobile'];
 $message = '';
 $sites = [];
