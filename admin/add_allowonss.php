@@ -2,6 +2,25 @@
 // Include your database connection file
 include 'db_connection.php';
 
+// Initialize an empty variable to hold user options
+$userOptions = "";
+
+// Fetch registered users from the database
+$sql = "SELECT userid, firstname, lastname FROM registereduser"; // Adjust according to your table structure
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    // Loop through each row and create an option for the dropdown
+    while ($row = $result->fetch_assoc()) {
+        // Option value is userid; display is firstname and lastname
+        $userOptions .= "<option value='" . $row['userid'] . "'>" . $row['firstname'] . " " . $row['lastname'] . "</option>";
+    }
+} else {
+    // If no users found, add a disabled option
+    $userOptions = "<option disabled>No registered users available</option>";
+}
+
+// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
     $userid = $_POST['userid'];  // Ensure `userid` is the correct name if from a dropdown
@@ -43,10 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="userid">Select User:</label>
             <select name="userid" required>
                 <option selected disabled>Select User</option>
-                <option value="1">User1</option>
-                <option value="2">User2</option>
-                <option value="3">User3</option>
-                <option value="4">User4</option>
+                <?php echo $userOptions; ?> <!-- Insert user options here -->
             </select><br><br>
 
             <label for="product">Product:</label>

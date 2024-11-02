@@ -1,7 +1,8 @@
 <?php
 session_start();
 include 'db_connection.php';  // Includes the database connection
-
+$logged_mobile = $_SESSION['mobile'];
+echo $logged_mobile;
 $message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

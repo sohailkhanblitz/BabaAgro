@@ -92,10 +92,10 @@ $conn->close();
                 // }
                 if ($result->num_rows > 0) {
                     echo "<p><strong>User ID:</strong> " . $transaction_info[0]['userid'] . "</p>";
-                    echo "<p><strong>User ID:</strong> " . $transaction_info[0]['firstname'] . "</p>";
-                    echo "<p><strong>User ID:</strong> " . $transaction_info[0]['lastname'] . "</p>";
-                    echo "<p><strong>User ID:</strong> " . $transaction_info[0]['mobile'] . "</p>";
-                    echo "<p><strong>User ID:</strong> " . $transaction_info[0]['userrole'] . "</p>";
+                    echo "<p><strong>First Name:</strong> " . $transaction_info[0]['firstname'] . "</p>";
+                    echo "<p><strong>Last Name:</strong> " . $transaction_info[0]['lastname'] . "</p>";
+                    echo "<p><strong>Mobile:</strong> " . $transaction_info[0]['mobile'] . "</p>";
+                    echo "<p><strong>User Role:</strong> " . $transaction_info[0]['userrole'] . "</p>";
                     // echo "<p><strong>First Name:</strong> " . $user_info['firstname'] . "</p>";
                     // echo "<p><strong>Last Name:</strong> " . $user_info['lastname'] . "</p>";
                     // echo "<p><strong>Mobile:</strong> " . $user_info['mobile'] . "</p>";
