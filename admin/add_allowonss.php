@@ -1,6 +1,20 @@
 <?php
 // Include your database connection file
+
+session_start();
+
+$admin = $_SESSION['admin_username'];
+// echo $admin;
 include 'db_connection.php';
+
+
+
+$user_stmt = $conn->prepare("SELECT Adminid FROM admin WHERE username = ?");
+$user_stmt->bind_param("s", $admin);
+$user_stmt->execute();
+$user_stmt->bind_result($adminid);
+$user_stmt->fetch();
+$user_stmt->close();
 
 // Initialize an empty variable to hold user options
 $userOptions = "";

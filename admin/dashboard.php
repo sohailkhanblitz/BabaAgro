@@ -1,5 +1,6 @@
 <?php
-include 'db_connection.php';
+session_start();
+include 'db_connection.php'; // Ensure db_connect.php connects to your database
 
 $user_info = "";
 $transaction_info = [];
@@ -18,12 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['adduser'])) {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Check if user exists
+    // Check if user exists and store their transactions
     if ($result->num_rows > 0) {
-        // Fetch user information only once
-        // $user_info = $result->fetch_assoc();
-
-        // Loop through the rest of the rows to get transaction information
         while ($transaction = $result->fetch_assoc()) {
             $transaction_info[] = $transaction;
         }
@@ -70,7 +67,6 @@ $conn->close();
                 <form action="" method="post">
                     <label for="adduser">Search User:</label>
                     <input type="text" id="adduser" name="adduser" required><br><br>
-
                     <button type="submit">Search User</button>
                 </form>
             </div>
@@ -79,29 +75,13 @@ $conn->close();
             <div class="user-info">
                 <h2>User Information</h2>
                 <?php
-                // if (is_array($user_info)) {
-                //     echo "<p><strong>User ID:</strong> " . $user_info['userid'] . "</p>";
-                //     echo "<p><strong>First Name:</strong> " . $user_info['firstname'] . "</p>";
-                //     echo "<p><strong>Last Name:</strong> " . $user_info['lastname'] . "</p>";
-                //     echo "<p><strong>Mobile:</strong> " . $user_info['mobile'] . "</p>";
-                //     echo "<p><strong>Email:</strong> " . $user_info['email'] . "</p>";
-                //     echo "<p><strong>User Role:</strong> " . $user_info['userrole'] . "</p>";
-                //     echo "<p><strong>User product:</strong> " . $user_info['product'] . "</p>";
-                // } else {
-                //     echo "<p>" . $user_info . "</p>";
-                // }
-                if ($result->num_rows > 0) {
+                if (!empty($transaction_info)) {
                     echo "<p><strong>User ID:</strong> " . $transaction_info[0]['userid'] . "</p>";
                     echo "<p><strong>First Name:</strong> " . $transaction_info[0]['firstname'] . "</p>";
                     echo "<p><strong>Last Name:</strong> " . $transaction_info[0]['lastname'] . "</p>";
                     echo "<p><strong>Mobile:</strong> " . $transaction_info[0]['mobile'] . "</p>";
+                    echo "<p><strong>Email:</strong> " . $transaction_info[0]['email'] . "</p>";
                     echo "<p><strong>User Role:</strong> " . $transaction_info[0]['userrole'] . "</p>";
-                    // echo "<p><strong>First Name:</strong> " . $user_info['firstname'] . "</p>";
-                    // echo "<p><strong>Last Name:</strong> " . $user_info['lastname'] . "</p>";
-                    // echo "<p><strong>Mobile:</strong> " . $user_info['mobile'] . "</p>";
-                    // echo "<p><strong>Email:</strong> " . $user_info['email'] . "</p>";
-                    // echo "<p><strong>User Role:</strong> " . $user_info['userrole'] . "</p>";
-                    // echo "<p><strong>User product:</strong> " . $user_info['product'] . "</p>";
                 } else {
                     echo "<p>" . $user_info . "</p>";
                 }

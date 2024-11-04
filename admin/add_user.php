@@ -1,7 +1,21 @@
 <?php
 // Start a session if necessary (only if using session for user authentication)
-// session_start();
+session_start();
 include 'db_connection.php'; // Ensure this file contains your database connection code
+
+$admin = $_SESSION['admin_username'];
+echo $admin;
+
+$user_stmt = $conn->prepare("SELECT Adminid FROM admin WHERE username = ?");
+$user_stmt->bind_param("s", $admin);
+$user_stmt->execute();
+$user_stmt->bind_result($adminid);
+$user_stmt->fetch();
+$user_stmt->close();
+
+// echo $adminid;
+
+
 
 // Check if the form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -11,10 +25,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mobile = htmlspecialchars($_POST['number']);
     $email = htmlspecialchars($_POST['email']);
     $user_role = htmlspecialchars($_POST['user']);
+    $createdby=$adminid;
+    $updatedby=$adminid;
 
     // Prepare and execute the insert query
-    $stmt = $conn->prepare("INSERT INTO registereduser (firstname, lastname, mobile, email, userrole) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $fname, $lname, $mobile, $email, $user_role);
+    $stmt = $conn->prepare("INSERT INTO registereduser (firstname, lastname, mobile, email, userrole,createdby,updatedby) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssss", $fname, $lname, $mobile, $email, $user_role,$createdby,$updatedby);
 
     if ($stmt->execute()) {
         echo "User added successfully!";
