@@ -1,69 +1,78 @@
 <?php
 session_start();
-include 'db_connection.php';  // Includes the database connection
-$logged_mobile = $_SESSION['mobile'];
-$message = '';
-$sites = [];
-$products = [];
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+include 'db_connection.php'; // Include your database connection
 
-// Fetching the user ID based on mobile number
-$user_stmt = $conn->prepare("SELECT userid FROM registereduser WHERE mobile = ?");
-$user_stmt->bind_param("s", $logged_mobile);
-$user_stmt->execute();
-$user_stmt->bind_result($userid);
-$user_stmt->fetch();
-$user_stmt->close();
+// Handle the form submission for adding an expense
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_expense') {
+    $expense_header = $_POST['expense_header'];
+    $expense_amount = $_POST['expense_amount'];
+    $expense_date = $_POST['expense_date'];
+    $site = $_POST['site'];
+    $product = $_POST['product'];
+    $user_id = $_SESSION['userid'];
+    $created_date = date('Y-m-d H:i:s');
 
-// Fetch sites and products for the logged in user
-if ($userid) {
-    // Fetching sites and products from allowance table
-    $stmt = $conn->prepare("SELECT DISTINCT site, product FROM allowancemaster WHERE userid = ?");
-    $stmt->bind_param("i", $userid);
-    $stmt->execute();
-    $stmt->bind_result($site, $product);
+    // Handle file upload if present
+    $file_path = null;
+    if (isset($_FILES['file_upload']) && $_FILES['file_upload']['error'] == UPLOAD_ERR_OK) {
+        $upload_dir = 'uploads/'; // Make sure this directory exists and is writable
+        $file_name = basename($_FILES['file_upload']['name']);
+        $file_tmp = $_FILES['file_upload']['tmp_name'];
+        $file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
 
-    while ($stmt->fetch()) {
-        // Store sites and products in arrays
-        if (!in_array($site, $sites)) {
-            $sites[] = $site;
-        }
-        if (!in_array($product, $products)) {
-            $products[] = $product;
+        // Validate file type (JPG or PDF)
+        if (in_array($file_ext, ['jpg', 'jpeg', 'pdf'])) {
+            $file_path = $upload_dir . uniqid('', true) . '.' . $file_ext; // Unique file name
+            if (!move_uploaded_file($file_tmp, $file_path)) {
+                echo "Failed to move uploaded file.";
+                exit;
+            }
+        } else {
+            echo "Invalid file type. Only JPG and PDF files are allowed.";
+            exit;
         }
     }
+
+    // Prepare the insert statement
+    $stmt = $conn->prepare("
+        INSERT INTO expense (expense_header, site, product, expense_amount, createdby, createddate, date, file_path) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+    $stmt->bind_param("ssssssss", $expense_header, $site, $product, $expense_amount, $user_id, $created_date, $expense_date, $file_path);
+
+    if ($stmt->execute()) {
+        // Redirect to the same page to avoid resubmission on refresh
+        header("Location: expense.php?site=$site&product=$product");
+        exit; // Ensure no further code is executed after the redirect
+    } else {
+        echo "Failed to add expense: " . $stmt->error; // Output detailed error
+        exit;
+    }
+
     $stmt->close();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Assign form values to variables
-    $site = $_POST['site'];
-    $product = $_POST['product'];
-    // $total_allowances = $_POST['text'];
-    $expense_amount = $_POST['expense_amount'];
-    $expense_header = $_POST['expense_header'];
-    
-    // Prepare the insert statement
-    $stmt = $conn->prepare("INSERT INTO expense (Exid, expense_header, site, product, expense_amount, date, createdby, createddate, updatedby, updateddate) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+// Get the selected site and product from the URL
+$site = isset($_GET['site']) ? $_GET['site'] : '';
+$product = isset($_GET['product']) ? $_GET['product'] : '';
 
-    // Prepare values
-    $exid = NULL; // If Exid is an auto-increment field, you can use NULL instead
-    $date = date('Y-m-d'); // Use PHP to get the current date
-
-    // Bind parameters, using appropriate types
-    $createdby = $userid;  // Use the fetched user ID
-    $updatedby = $userid;  // Use the fetched user ID
-    $createddate = $date;  // Set created date
-    $updateddate = $date;  // Set updated date
-
-    $stmt->bind_param("issdssssss", $exid, $expense_header, $site, $product, $expense_amount, $date, $createdby, $createddate, $updatedby, $updateddate);
-
-    if ($stmt->execute()) {
-        $message = "Expense successfully added!";
-    } else {
-        $message = "Error: " . $stmt->error;
+// Fetch all expenses for the selected site and product
+$expenses = [];
+if ($site && $product) {
+    $stmt = $conn->prepare("
+        SELECT date, expense_header, expense_amount, file_path 
+        FROM expense 
+        WHERE site = ? AND product = ?
+        ORDER BY date DESC
+    ");
+    $stmt->bind_param("ss", $site, $product);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $expenses[] = $row;
     }
-
     $stmt->close();
 }
 
@@ -75,42 +84,90 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Expenses</title>
+    <title>Expense Details</title>
     <link rel="stylesheet" href="../css/expense.css">
+    <style>
+        /* Basic styles for layout */
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; }
+        .add-expense-button { padding: 10px 20px; background-color: #4CAF50; color: white; border-radius: 5px; cursor: pointer; }
+        .add-expense-button:hover { background-color: #45a049; }
+        .expense-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .expense-table th, .expense-table td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        .expense-table th { background-color: #f2f2f2; }
+        #expenseModal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); }
+        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; }
+        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
+        .close:hover, .close:focus { color: black; cursor: pointer; }
+    </style>
 </head>
 <body>
     <div class="container">
-        <form action="" method="post">
-            <h2>Add Expense</h2>
+        <header>
+            <h1>Site: <?php echo htmlspecialchars($site); ?> Product: <?php echo htmlspecialchars($product); ?></h1>
+            <button id="addExpenseButton" class="add-expense-button">Add New Expense</button>
+        </header>
 
-            <label for="site">Select Site:</label>
-            <select name="site" required id="select">
-                <option selected disabled>Select Sites</option>
-                <?php foreach ($sites as $site) : ?>
-                    <option value="<?php echo htmlspecialchars($site); ?>"><?php echo htmlspecialchars($site); ?></option>
-                <?php endforeach; ?>
-            </select><br><br>
-
-            <label for="product">Select Product:</label>
-            <select name="product" required id="select">
-                <option selected disabled>Select Product</option>
-                <?php foreach ($products as $product) : ?>
-                    <option value="<?php echo htmlspecialchars($product); ?>"><?php echo htmlspecialchars($product); ?></option>
-                <?php endforeach; ?>
-            </select><br><br>
-<!-- 
-            <label for="text">Total Allowances:</label>
-            <input type="text" id="text" name="text" > -->
-
-            <label for="expense_amount">Expense Amount:</label>
-            <input type="number" id="expense_amount" name="expense_amount" step="0.01" required><br><br>
-
-            <label for="expense_header">Expense Header:</label>
-            <textarea id="expense_header" name="expense_header" rows="3" placeholder="Header (optional)"></textarea><br><br>
-
-            <button type="submit">Submit</button>
-            <?php echo $message; ?>
-        </form>
+        <?php if (!empty($expenses)) : ?>
+            <table class="expense-table">
+                <thead>
+                    <tr><th>Date</th><th>Description</th><th>Amount</th><th>File</th></tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($expenses as $expense) : ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($expense['date']); ?></td>
+                            <td><?php echo htmlspecialchars($expense['expense_header']); ?></td>
+                            <td><?php echo htmlspecialchars($expense['expense_amount']); ?></td>
+                            <td>
+                                <?php if ($expense['file_path']) : ?>
+                                    <a href="<?php echo htmlspecialchars($expense['file_path']); ?>" target="_blank">View File</a>
+                                <?php else : ?>
+                                    No File Uploaded
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php else : ?>
+            <p>No expenses found for this product.</p>
+        <?php endif; ?>
     </div>
+
+    <!-- Modal for Adding Expense -->
+    <div id="expenseModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Add Expense</h3>
+            <form id="expenseForm" method="post" enctype="multipart/form-data">
+                <label for="expense_date">Date:</label>
+                <input type="date" id="expense_date" name="expense_date" required>
+                <label for="expense_header">Expense Header:</label>
+                <input type="text" id="expense_header" name="expense_header" required>
+                <label for="expense_amount">Expense Amount:</label>
+                <input type="number" id="expense_amount" name="expense_amount" required>
+                <label for="file_upload">Upload File (JPG or PDF):</label>
+                <input type="file" id="file_upload" name="file_upload" accept=".jpg, .jpeg, .pdf">
+                <input type="hidden" name="site" value="<?php echo htmlspecialchars($site); ?>">
+                <input type="hidden" name="product" value="<?php echo htmlspecialchars($product); ?>">
+                <input type="hidden" name="action" value="add_expense">
+                <button type="submit">Submit</button>
+                <button type="button" class="close">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $('#addExpenseButton').on('click', function () { $('#expenseModal').show(); });
+        $('.close').on('click', function () { $('#expenseModal').hide(); });
+
+        $(window).on('click', function(event) {
+            if ($(event.target).is('#expenseModal')) {
+                $('#expenseModal').hide();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,59 +1,37 @@
 <?php
 session_start();
-include 'db_connection.php'; // Ensure db_connect.php connects to your database
+include 'db_connection.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
-    if ($_POST['action'] == 'login') {
-        // Login logic
-        $mobile = $_POST['mobile'];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'search') {
+    $mobile = $_POST['mobile'];
 
-        // Check if the mobile number exists
-        $stmt = $conn->prepare("SELECT mobile FROM registereduser WHERE mobile = ?");
-        $stmt->bind_param("s", $mobile);
-        $stmt->execute();
-        $stmt->store_result();
+    // Query to get user and allowance details, including the user ID
+    $stmt = $conn->prepare("SELECT r.userid, r.firstname, r.lastname, r.email, r.userrole, a.site, a.product, a.status
+                            FROM registereduser r
+                            LEFT JOIN allowancemaster a ON r.userid = a.userid
+                            WHERE r.mobile = ? ORDER BY a.status = 'active' DESC");
+    $stmt->bind_param("s", $mobile);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($userid, $firstname, $lastname, $email, $userrole, $site, $product, $status);
 
-        if ($stmt->num_rows > 0) {
-            $_SESSION['mobile'] = $mobile; // Store the mobile in session
-            header("Location: expense.php");
-            exit();
-        } else {
-            $error = "Mobile number not found. Please try again.";
-        }
-
-        $stmt->close();
-    } elseif ($_POST['action'] == 'search') {
-        // Search logic for AJAX request
-        $mobile = $_POST['mobile'];
-
-        // Prepare the SQL statement to retrieve user details and allowance data
-        $stmt = $conn->prepare("SELECT r.firstname, r.lastname, r.email, r.userrole, a.site, a.product
-                                FROM registereduser r
-                                LEFT JOIN allowancemaster a ON r.userid = a.userid
-                                WHERE r.mobile = ?");
-        $stmt->bind_param("s", $mobile);
-        $stmt->execute();
-        $stmt->store_result();
-        $stmt->bind_result($firstname, $lastname, $email, $userrole, $site, $product);
-
-        $results = [];
-        while ($stmt->fetch()) {
-            // Populate results array with user and allowance details
-            $results[] = ['firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'userrole' => $userrole, 'site' => $site, 'product' => $product];
-        }
-
-        if (count($results) > 0) {
-            // Send user details and all associated site-product pairs as JSON
-            echo json_encode(['status' => 'found', 'details' => $results]);
-        } else {
-            echo json_encode(['status' => 'not_found']);
-        }
-
-        $stmt->close();
-        exit(); // Exit to avoid further output
+    $results = [];
+    $sites = [];
+    $products = [];
+    while ($stmt->fetch()) {
+        $results[] = ['userid' => $userid, 'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'userrole' => $userrole, 'site' => $site, 'product' => $product, 'status' => $status];
+        if (!in_array($site, $sites) && $site) $sites[] = $site;
+        if (!in_array($product, $products) && $product) $products[] = $product;
     }
+    
+    // Store the userid in the session
+    if (!empty($results)) {
+        $_SESSION['userid'] = $results[0]['userid']; // Store the first user's ID
+    }
+
+    echo json_encode(['status' => 'found', 'details' => $results, 'sites' => $sites, 'products' => $products]);
+    exit();
 }
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -61,43 +39,51 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>User Information</title>
     <link rel="stylesheet" href="../css/expense.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <form action="" method="post" id="loginForm">
-            <h2>User Login</h2>
-            <?php if (isset($error)) { echo "<p style='color: red;'>$error</p>"; } ?>
-
+        <form id="loginForm">
+            <h2>User Information</h2>
             <label for="mobile">Mobile Number:</label>
             <input type="text" id="mobile" name="mobile" required placeholder="Enter your mobile number">
             <button type="button" id="searchButton">Search</button>
-            <button type="submit" name="action" value="login">Login</button>
-            <a href="admin.php">Admin Login</a>
 
             <div id="userDetails" style="display: none;">
                 <p id="nameDisplay"></p>
                 <p id="emailDisplay"></p>
                 <p id="roleDisplay"></p>
-                <!-- <div>
-                    <label for="siteDropdown">Select Site:</label>
-                    <select id="siteDropdown" name="site">
-                        <option selected disabled>Select Site</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="productDropdown">Select Product:</label>
-                    <select id="productDropdown" name="product">
-                        <option selected disabled>Select Product</option>
-                    </select>
-                </div> -->
+
+                <label for="siteFilter">Filter by Site:</label>
+                <select id="siteFilter">
+                    <option value="">All Sites</option>
+                </select>
+
+                <label for="productFilter">Filter by Product:</label>
+                <select id="productFilter">
+                    <option value="">All Products</option>
+                </select>
+
+                <!-- Table for User Details -->
+                <table id="allowanceTable" border="1" style="width:100%; margin-top:20px;">
+                    <thead>
+                        <tr>
+                            <th>Site</th>
+                            <th>Product</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </form>
+        <a href="admin.php"><button>Admin Login</button></a>
     </div>
 
     <script>
+        // Handle search button click
         $('#searchButton').on('click', function () {
             const mobile = $('#mobile').val();
             if (mobile) {
@@ -113,32 +99,67 @@ $conn->close();
                             $('#emailDisplay').text('Email: ' + details.email);
                             $('#roleDisplay').text('Role: ' + details.userrole);
 
-                            // Clear and populate dropdowns
-                            $('#siteDropdown').empty().append('<option selected disabled>Select Site</option>');
-                            $('#productDropdown').empty().append('<option selected disabled>Select Product</option>');
-
-                            data.details.forEach(function(item) {
-                                if (item.site) {
-                                    $('#siteDropdown').append(`<option value="${item.site}">${item.site}</option>`);
-                                }
-                                if (item.product) {
-                                    $('#productDropdown').append(`<option value="${item.product}">${item.product}</option>`);
-                                }
+                            // Populate dropdown filters
+                            $('#siteFilter').empty().append('<option value="">All Sites</option>');
+                            data.sites.forEach(site => {
+                                $('#siteFilter').append(`<option value="${site}">${site}</option>`);
                             });
+                            $('#productFilter').empty().append('<option value="">All Products</option>');
+                            data.products.forEach(product => {
+                                $('#productFilter').append(`<option value="${product}">${product}</option>`);
+                            });
+
+                            // Populate table with all records
+                            updateTable(data.details);
 
                             $('#userDetails').show();
                         } else {
                             $('#nameDisplay').text('User not found.');
                             $('#emailDisplay').text('');
                             $('#roleDisplay').text('');
-                            $('#siteDropdown').empty().append('<option selected disabled>Select Site</option>');
-                            $('#productDropdown').empty().append('<option selected disabled>Select Product</option>');
-                            $('#userDetails').show();
+                            $('#userDetails').hide();
                         }
                     }
                 });
             }
         });
+
+        // Filter table based on dropdown selections
+        $('#siteFilter, #productFilter').on('change', function () {
+            const siteFilter = $('#siteFilter').val();
+            const productFilter = $('#productFilter').val();
+
+            $.ajax({
+                url: '', // Re-query server for updated results
+                type: 'POST',
+                data: { mobile: $('#mobile').val(), action: 'search' },
+                success: function (response) {
+                    const data = JSON.parse(response);
+                    const filteredDetails = data.details.filter(detail => {
+                        const matchesSite = siteFilter ? detail.site === siteFilter : true;
+                        const matchesProduct = productFilter ? detail.product === productFilter : true;
+                        return matchesSite && matchesProduct;
+                    });
+
+                    updateTable(filteredDetails);
+                }
+            });
+        });
+
+        // Function to update table
+        function updateTable(details) {
+            const tableBody = $('#allowanceTable tbody');
+            tableBody.empty();
+
+            details.forEach(function (detail) {
+                const row = `<tr>
+                    <td><a href="expense.php?site=${encodeURIComponent(detail.site)}&product=${encodeURIComponent(detail.product)}" style="color: blue; text-decoration: underline;">${detail.site}</a></td>
+                    <td>${detail.product}</td>
+                    <td>${detail.status}</td>
+                </tr>`;
+                tableBody.append(row);
+            });
+        }
     </script>
 </body>
 </html>
