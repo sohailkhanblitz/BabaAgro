@@ -2,6 +2,8 @@
 session_start();
 include 'db_connection.php';
 
+$showDetails = false; // Variable to control visibility of additional details
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'search') {
     $mobile = $_POST['mobile'];
 
@@ -23,15 +25,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         if (!in_array($site, $sites) && $site) $sites[] = $site;
         if (!in_array($product, $products) && $product) $products[] = $product;
     }
-    
-    // Store the userid in the session
-    if (!empty($results)) {
-        $_SESSION['userid'] = $results[0]['userid']; // Store the first user's ID
-    }
 
-    echo json_encode(['status' => 'found', 'details' => $results, 'sites' => $sites, 'products' => $products]);
-    exit();
+    if (!empty($results)) {
+        $_SESSION['userid'] = $results[0]['userid'];
+        $_SESSION['username'] = $results[0]['firstname'] . " " . $results[0]['lastname'];
+        $_SESSION['userDetails'] = $results;
+        $_SESSION['allData'] = $results; // Store all user data for filtering
+        $showDetails = true; // Show additional details since search was successful
+    }
 }
+
+// Handle site and product filtering
+if (isset($_POST['siteFilter']) || isset($_POST['productFilter'])) {
+    $selectedSite = $_POST['siteFilter'];
+    $selectedProduct = $_POST['productFilter'];
+    $filteredData = [];
+
+    if (isset($_SESSION['allData'])) {
+        foreach ($_SESSION['allData'] as $detail) {
+            $matchesSite = empty($selectedSite) || $detail['site'] == $selectedSite;
+            $matchesProduct = empty($selectedProduct) || $detail['product'] == $selectedProduct;
+
+            if ($matchesSite && $matchesProduct) {
+                $filteredData[] = $detail;
+            }
+        }
+    }
+    $_SESSION['filteredData'] = $filteredData;
+    $showDetails = true;
+} else {
+    $_SESSION['filteredData'] = $_SESSION['allData'] ?? [];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -41,32 +66,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Information</title>
     <link rel="stylesheet" href="../css/expense.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <form id="loginForm">
+        <form method="POST" action="">
             <h2>User Information</h2>
+            
+            <!-- Mobile Number Input and Search Button -->
+            <input type="hidden" name="action" value="search">
             <label for="mobile">Mobile Number:</label>
-            <input type="text" id="mobile" name="mobile" required placeholder="Enter your mobile number">
-            <button type="button" id="searchButton">Search</button>
+            <input type="text" id="mobile" name="mobile" required placeholder="Enter your mobile number" value="<?php echo isset($mobile) ? $mobile : ''; ?>">
+            <button type="submit">Search</button>
+            
+            <?php if ($showDetails && isset($_SESSION['userDetails']) && !empty($_SESSION['userDetails'])): ?>
+            <!-- Additional Details and Filters, Shown After Search -->
+            <div id="userDetails">
+                <?php
+                    $details = $_SESSION['userDetails'][0];
+                    echo "<p>Name: " . $details['firstname'] . " " . $details['lastname'] . "</p>";
+                    echo "<p>Email: " . $details['email'] . "</p>";
+                    echo "<p>Role: " . $details['userrole'] . "</p>";
+                ?>
 
-            <div id="userDetails" style="display: none;">
-                <p id="nameDisplay"></p>
-                <p id="emailDisplay"></p>
-                <p id="roleDisplay"></p>
-
+                <!-- Site Filter Dropdown -->
                 <label for="siteFilter">Filter by Site:</label>
-                <select id="siteFilter">
+                <select name="siteFilter" onchange="this.form.submit()">
                     <option value="">All Sites</option>
+                    <?php
+                        foreach ($sites as $site) {
+                            echo "<option value='$site'" . (isset($selectedSite) && $selectedSite == $site ? " selected" : "") . ">$site</option>";
+                        }
+                    ?>
                 </select>
 
+                <!-- Product Filter Dropdown -->
                 <label for="productFilter">Filter by Product:</label>
-                <select id="productFilter">
+                <select name="productFilter" onchange="this.form.submit()">
                     <option value="">All Products</option>
+                    <?php
+                        foreach ($products as $product) {
+                            echo "<option value='$product'" . (isset($selectedProduct) && $selectedProduct == $product ? " selected" : "") . ">$product</option>";
+                        }
+                    ?>
                 </select>
 
-                <!-- Table for User Details -->
+                <!-- Allowance Table -->
                 <table id="allowanceTable" border="1" style="width:100%; margin-top:20px;">
                     <thead>
                         <tr>
@@ -75,91 +119,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        <?php
+                            $displayData = $_SESSION['filteredData'] ?? [];
+                            foreach ($displayData as $detail) {
+                                echo "<tr>
+                                        <td><a href='expense.php?site=" . urlencode($detail['site']) . "&product=" . urlencode($detail['product']) . "'>" . $detail['site'] . "</a></td>
+                                        <td>" . $detail['product'] . "</td>
+                                        <td>" . $detail['status'] . "</td>
+                                      </tr>";
+                            }
+                        ?>
+                    </tbody>
                 </table>
             </div>
+            <?php endif; ?>
         </form>
         <a href="admin.php"><button>Admin Login</button></a>
     </div>
-
-    <script>
-        // Handle search button click
-        $('#searchButton').on('click', function () {
-            const mobile = $('#mobile').val();
-            if (mobile) {
-                $.ajax({
-                    url: '', // Current PHP file
-                    type: 'POST',
-                    data: { mobile: mobile, action: 'search' },
-                    success: function (response) {
-                        const data = JSON.parse(response);
-                        if (data.status === 'found') {
-                            const details = data.details[0];
-                            $('#nameDisplay').text('Name: ' + details.firstname + ' ' + details.lastname);
-                            $('#emailDisplay').text('Email: ' + details.email);
-                            $('#roleDisplay').text('Role: ' + details.userrole);
-
-                            // Populate dropdown filters
-                            $('#siteFilter').empty().append('<option value="">All Sites</option>');
-                            data.sites.forEach(site => {
-                                $('#siteFilter').append(`<option value="${site}">${site}</option>`);
-                            });
-                            $('#productFilter').empty().append('<option value="">All Products</option>');
-                            data.products.forEach(product => {
-                                $('#productFilter').append(`<option value="${product}">${product}</option>`);
-                            });
-
-                            // Populate table with all records
-                            updateTable(data.details);
-
-                            $('#userDetails').show();
-                        } else {
-                            $('#nameDisplay').text('User not found.');
-                            $('#emailDisplay').text('');
-                            $('#roleDisplay').text('');
-                            $('#userDetails').hide();
-                        }
-                    }
-                });
-            }
-        });
-
-        // Filter table based on dropdown selections
-        $('#siteFilter, #productFilter').on('change', function () {
-            const siteFilter = $('#siteFilter').val();
-            const productFilter = $('#productFilter').val();
-
-            $.ajax({
-                url: '', // Re-query server for updated results
-                type: 'POST',
-                data: { mobile: $('#mobile').val(), action: 'search' },
-                success: function (response) {
-                    const data = JSON.parse(response);
-                    const filteredDetails = data.details.filter(detail => {
-                        const matchesSite = siteFilter ? detail.site === siteFilter : true;
-                        const matchesProduct = productFilter ? detail.product === productFilter : true;
-                        return matchesSite && matchesProduct;
-                    });
-
-                    updateTable(filteredDetails);
-                }
-            });
-        });
-
-        // Function to update table
-        function updateTable(details) {
-            const tableBody = $('#allowanceTable tbody');
-            tableBody.empty();
-
-            details.forEach(function (detail) {
-                const row = `<tr>
-                    <td><a href="expense.php?site=${encodeURIComponent(detail.site)}&product=${encodeURIComponent(detail.product)}" style="color: blue; text-decoration: underline;">${detail.site}</a></td>
-                    <td>${detail.product}</td>
-                    <td>${detail.status}</td>
-                </tr>`;
-                tableBody.append(row);
-            });
-        }
-    </script>
 </body>
 </html>

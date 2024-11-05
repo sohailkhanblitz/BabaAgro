@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Verify the password
         if ($password === $hashed_password) { // Replace with password_verify($password, $hashed_password) if passwords are hashed
             $_SESSION['admin_username'] = $username;
-            header("Location: dashboard.php");
+            header("Location: nav.php");
             exit();
         } else {
             $error = "Invalid password. Please try again.";
