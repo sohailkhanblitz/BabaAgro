@@ -64,76 +64,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Allowance</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            background-color: #333;
-            padding: 10px;
-            color: white;
-        }
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 15px;
-        }
-        .navbar a:hover {
-            background-color: #575757;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-        }
-        input[type="text"],
-        input[type="number"],
-        input[type="date"],
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button.addallow {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-        }
-        button.addallow:hover {
-            background-color: #45a049;
-        }
-        .success-message {
-            color: green;
-            text-align: center;
-        }
-        .error-message {
-            color: red;
-            text-align: center;
-        }
+      
     </style>
+       <link rel="stylesheet" href="../css/allowance.css">
 </head>
 <body>
 

@@ -65,7 +65,7 @@ if (isset($_POST['siteFilter']) || isset($_POST['productFilter'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Information</title>
-    <link rel="stylesheet" href="../css/expense.css">
+    <link rel="stylesheet" href="../css/labour.css">
 </head>
 <body>
     <div class="container">
