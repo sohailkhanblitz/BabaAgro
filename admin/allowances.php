@@ -81,10 +81,7 @@ $conn->close();
             <a href="add_user.php">Add User</a>
             <a href="allowances.php">Add Allowance</a>
         </div>
-        <div>
-            <span>Welcome, <?php echo $admin; ?> | </span>
-            <a href="logout.php">Logout</a>
-        </div>
+        
     </div>
 
     <div class="container">
