@@ -124,17 +124,30 @@
             <div class="user-info">
                 <h2>User Information</h2>
                 <?php
-                if (!empty($transaction_info)) {
-                    echo "<p><strong>User ID:</strong> " . $transaction_info[0]['userid'] . "</p>";
-                    echo "<p><strong>First Name:</strong> " . $transaction_info[0]['firstname'] . "</p>";
-                    echo "<p><strong>Last Name:</strong> " . $transaction_info[0]['lastname'] . "</p>";
-                    echo "<p><strong>Mobile:</strong> " . $transaction_info[0]['mobile'] . "</p>";
-                    echo "<p><strong>Email:</strong> " . $transaction_info[0]['email'] . "</p>";
-                    echo "<p><strong>User Role:</strong> " . $transaction_info[0]['userrole'] . "</p>";
-                } else {
-                    echo "<p>" . $user_info . "</p>";
-                }
-                ?>
+if (!empty($transaction_info)) {
+    echo "<table border='1' cellpadding='10' cellspacing='0'>";
+    echo "<tr>";
+    echo "<th>User ID</th>";
+    echo "<th>First Name</th>";
+    echo "<th>Last Name</th>";
+    echo "<th>Mobile</th>";
+    echo "<th>Email</th>";
+    echo "<th>User Role</th>";
+    echo "</tr>";
+    echo "<tr>";
+    echo "<td>" . htmlspecialchars($transaction_info[0]['userid']) . "</td>";
+    echo "<td>" . htmlspecialchars($transaction_info[0]['firstname']) . "</td>";
+    echo "<td>" . htmlspecialchars($transaction_info[0]['lastname']) . "</td>";
+    echo "<td>" . htmlspecialchars($transaction_info[0]['mobile']) . "</td>";
+    echo "<td>" . htmlspecialchars($transaction_info[0]['email']) . "</td>";
+    echo "<td>" . htmlspecialchars($transaction_info[0]['userrole']) . "</td>";
+    echo "</tr>";
+    echo "</table>";
+} else {
+    echo "<p>" . htmlspecialchars($user_info) . "</p>";
+}
+?>
+
             </div>
 
             <!-- Display Transaction Information -->
@@ -142,7 +155,7 @@
                 <h2>Transaction History</h2>
                 <div id="status-message"></div> <!-- Message display area -->
                 <?php
-                if (!empty($transaction_info)) {
+                if (!empty($transaction_info[0]['product'])) {
                     echo "<div class='table-container'>";
                     echo "<table>";
                     echo "<tr><th>Date</th><th>Product</th><th>Site</th><th>Allowance</th><th>Total Expense</th><th>Status</th><th>Info</th></tr>";
@@ -174,6 +187,9 @@
                     }
                     echo "</table>";
                     echo "</div>";
+                }
+                else{
+                    echo "No transaction found";
                 }
                 ?>
             </div>
