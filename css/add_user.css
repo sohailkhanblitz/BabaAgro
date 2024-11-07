@@ -155,3 +155,15 @@ p {
     font-size: 0.9rem;
     color: red;
 }
+
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Remove arrows in Chrome, Safari, Edge, and Opera */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

@@ -135,7 +135,7 @@ if (isset($_POST['siteFilter']) || isset($_POST['productFilter'])) {
             </div>
             <?php endif; ?>
         </form>
-        <a href="admin.php"><button>Admin Login</button></a>
+        <a href="admin.php">Admin Login</a>
     </div>
 </body>
 </html>

@@ -47,17 +47,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction Details</title>
     <link rel="stylesheet" href="../css/style.css">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        .navbar { background-color: #333; overflow: hidden; }
-        .navbar a { float: left; display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none; }
-        .navbar a:hover { background-color: #ddd; color: black; }
-        .container { padding: 20px; }
-        .table-container { margin: 20px 0; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
-        .back-btn { background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; }
-    </style>
+   
 </head>
 <body>
 
