@@ -1,152 +1,86 @@
-/* General Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
-body {
-  background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #333;
-}
-
-/* Navbar Styling */
-.navbar {
-  width: 100%;
-  background-color: #333;
-  display: flex;
-  justify-content: center;
-  padding: 10px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
-  position: fixed;
-  top: 0;
-  z-index: 1000;
-}
-
-.navbar a {
-  color: #fff;
-  text-align: center;
-  padding: 10px 20px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background 0.3s, color 0.3s;
-  margin: 0 10px;
-  border-radius: 4px;
-}
-
-.navbar a:hover {
-  background-color: #4a90e2;
-  color: #fff;
-}
-
-/* Container Styling */
+/* General Container */
 .container {
-  width: 100%;
-  max-width: 900px;
-  padding: 40px;
-  background: #fff;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  margin-top: 80px;
-  text-align: center;
-}
-
-/* Modal Styling */
-#expenseModal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: #fff;
+  max-width: 800px;
+  margin: 0 auto;
   padding: 20px;
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  width: 80%;
-  max-width: 500px;
-}
-
-.modal-content h2 {
-  font-size: 1.8rem;
+  font-family: Arial, sans-serif;
   color: #333;
-  margin-bottom: 1rem;
 }
 
-.modal-content input[type="text"],
-.modal-content input[type="number"],
-.modal-content input[type="date"],
-.modal-content input[type="file"] {
-  width: 100%;
-  padding: 10px;
-  margin-top: 0.5rem;
-  border-radius: 5px;
-  border: 1px solid #ddd;
+/* Header Styling */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
 }
 
-.modal-content button[type="submit"] {
-  margin-top: 1.5rem;
-  padding: 10px;
-  width: 100%;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.modal-content button[type="submit"]:hover {
-  background-color: #2980b9;
-}
-
-.modal-content .close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+header h1 {
   font-size: 1.5rem;
-  cursor: pointer;
+  color: #333;
 }
 
-/* Button Styling */
-.add-expense-button,
+header button,
 .update-status-button {
-  padding: 10px 20px;
-  background-color: #3498db;
-  color: white;
+  color: #fff;
+  padding: 12px 24px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.add-expense-button:hover,
-.update-status-button:hover {
-  background-color: #2980b9;
-}
-
-.add-expense-button:disabled,
+header button:disabled,
 .update-status-button:disabled {
-  background-color: #bdc3c7;
-  cursor: not-allowed;
+  background-color: #888;
 }
 
-/* Table Styling */
+header button:enabled {
+  background: linear-gradient(90deg, #4a90e2, #357abd);
+}
+
+
+
+header button:hover:not(:disabled),
+.update-status-button:hover:not(:disabled) {
+  background: linear-gradient(90deg, #357abd, #4a90e2);
+  transform: scale(1.05);
+}
+
+/* User Info */
+.user-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+/* Totals Section */
+.totals {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.totals p {
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Table Styles */
 .expense-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .expense-table th,
@@ -157,235 +91,99 @@ body {
 }
 
 .expense-table th {
-  background-color: #3498db;
+  background-color: #4a90e2;
   color: white;
 }
 
-.expense-table td a {
-  color: #3498db;
-  text-decoration: none;
-  transition: color 0.3s ease;
+.expense-table tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
-.expense-table td a:hover {
-  color: #2980b9;
-}
-
-/* Form Styling */
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  font-size: 0.9rem;
-  color: #555;
-  text-align: left;
-  margin-top: 1rem;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="email"] {
+/* Modal Styling */
+#expenseModal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
   width: 100%;
-  padding: 0.8rem;
-  margin-top: 0.5rem;
-  border-radius: 5px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent background */
+  overflow: auto;
+  padding-top: 50px;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.modal-content label {
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+  color: #333;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content input[type="date"],
+.modal-content input[type="file"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
   border: 1px solid #ddd;
-  transition: border-color 0.3s ease;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="email"]:focus {
-  border-color: #3498db;
-  outline: none;
-  box-shadow: 0 0 5px rgba(52, 152, 219, 0.4);
-}
-
-button[type="submit"] {
-  margin-top: 1.5rem;
-  padding: 0.8rem;
+.modal-content button {
   width: 100%;
-  background-color: #3498db;
-  color: white;
+  padding: 10px;
+  background: linear-gradient(90deg, #4a90e2, #357abd);
+  color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  /* background-color: #4a90e2; */
+  /* border-radius: 4px; */
+  /* cursor: pointer; */
+  /* margin-top: 10px; */
+  /* transition: background 0.3s, transform 0.2s; */
+  /* padding: 12px 24px; */
+  /* font-weight: bold; */
 }
 
-button[type="submit"]:hover {
-  background-color: #2980b9;
+.modal-content button:hover {
+  background: linear-gradient(90deg, #357abd, #4a90e2);
+  transform: scale(1.05);
 }
 
-/* Responsive Styles */
-@media screen and (max-width: 768px) {
-  .container {
-      width: 100%;
-      padding: 20px;
-  }
-
-  .modal-content {
-      width: 90%;
-  }
-}
-
-
-/* Basic Styling for Modal */
-#expenseModal {
-  display: none; /* Initially hidden */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-  z-index: 1001; /* Above other content */
-  justify-content: center;
-  align-items: center;
-  animation: fadeInModal 0.3s ease-in-out;
-}
-
-/* Modal Content Styling */
-.modal-content {
-  width: 80%;
-  max-width: 600px;
-  background: #fff;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  animation: slideIn 0.3s ease-out;
-  overflow: hidden;
-}
-
-/* Modal Close Button */
+/* Close Button */
 .close {
   position: absolute;
   top: 10px;
   right: 15px;
   font-size: 1.5rem;
-  color: #333;
+  color: #888;
   cursor: pointer;
-  transition: color 0.3s ease;
 }
 
 .close:hover {
-  color: #e74c3c;
-}
-
-/* Modal Header */
-h2 {
-  text-align: center;
-  color: #333;
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  font-weight: bold;
-}
-
-/* Form Label */
-label {
-  font-size: 1rem;
-  color: #555;
-  text-align: left;
-  margin-bottom: 0.5rem;
-}
-
-/* Form Input Styling */
-input[type="text"],
-input[type="number"],
-input[type="date"],
-input[type="file"] {
-  width: 100%;
-  padding: 0.8rem;
-  margin: 0.8rem 0;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="date"]:focus,
-input[type="file"]:focus {
-  border-color: #3498db;
-  outline: none;
-  box-shadow: 0 0 5px rgba(52, 152, 219, 0.4);
-}
-
-/* Submit Button */
-button[type="submit"] {
-  width: 100%;
-  padding: 0.8rem;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-  margin-top: 1.5rem;
-}
-
-button[type="submit"]:hover {
-  background-color: #2980b9;
-}
-
-/* Animation for Modal */
-@keyframes fadeInModal {
-  from {
-      opacity: 0;
-  }
-  to {
-      opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-      transform: translateY(-50px);
-      opacity: 0;
-  }
-  to {
-      transform: translateY(0);
-      opacity: 1;
-  }
-}
-
-/* Optional Styling for File Upload */
-input[type="file"] {
-  border: none;
-  padding: 10px 0;
-}
-
-input[type="file"]:focus {
-  border: 1px solid #3498db;
-}
-
-/* Additional Enhancements */
-body {
-  font-family: Arial, sans-serif;
-  background: #f0f4f8;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-}
-
-.container {
-  width: 100%;
-  max-width: 900px;
-  padding: 40px;
-  background: #fff;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  margin-top: 80px;
-  text-align: center;
-}
-
-h1 {
-  font-size: 2rem;
   color: #333;
 }

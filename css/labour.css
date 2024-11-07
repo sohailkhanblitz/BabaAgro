@@ -65,7 +65,6 @@ input[type="text"]:focus {
 }
 
 button[type="submit"] {
-    background-color: #4a90e2;
     color: #fff;
     /* padding: 0.8rem 1.5rem; */
     padding: 0.8rem 9.1rem;
@@ -74,12 +73,19 @@ button[type="submit"] {
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease;
     margin-top: 1rem;
+
+    background: linear-gradient(90deg, #4a90e2, #357abd);
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+
 }
 
 button[type="submit"]:hover {
-    background-color: #357abd;
+
+
+    background: linear-gradient(90deg, #357abd, #4a90e2);
+     transform: scale(1.05);
 }
 
 select {

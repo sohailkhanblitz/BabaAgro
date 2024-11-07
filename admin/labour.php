@@ -81,12 +81,22 @@ if (isset($_POST['siteFilter']) || isset($_POST['productFilter'])) {
             <?php if ($showDetails && isset($_SESSION['userDetails']) && !empty($_SESSION['userDetails'])): ?>
             <!-- Additional Details and Filters, Shown After Search -->
             <div id="userDetails">
-                <?php
-                    $details = $_SESSION['userDetails'][0];
-                    echo "<p>Name: " . $details['firstname'] . " " . $details['lastname'] . "</p>";
-                    echo "<p>Email: " . $details['email'] . "</p>";
-                    echo "<p>Role: " . $details['userrole'] . "</p>";
-                ?>
+            <?php
+    $details = $_SESSION['userDetails'][0];
+?>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+    </tr>
+    <tr>
+        <td><?php echo htmlspecialchars($details['firstname'] . " " . $details['lastname']); ?></td>
+        <td><?php echo htmlspecialchars($details['email']); ?></td>
+        <td><?php echo htmlspecialchars($details['userrole']); ?></td>
+    </tr>
+</table>
 
                 <!-- Site Filter Dropdown -->
                 <label for="siteFilter">Filter by Site:</label>
