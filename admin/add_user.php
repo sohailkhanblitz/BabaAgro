@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="text" id="lname" name="lname" required>
 
             <label for="number">Enter Mobile:</label>
-            <input type="number" id="number" name="number" required>
+            <input type="text" id="number" name="number" maxlength="10" pattern="\d{10}" required>
 
             <label for="email">Enter Email:</label>
             <input type="email" id="email" name="email" required>

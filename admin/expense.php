@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $product = $_POST['product'];
 
         // Update the allowancemaster table to change status to 'done'
-        $stmt = $conn->prepare("UPDATE allowancemaster SET status = 'done' WHERE site = ? AND product = ?");
+        $stmt = $conn->prepare("UPDATE allowancemaster SET status = 'Pushed For Approval' WHERE site = ? AND product = ?");
         $stmt->bind_param("ss", $site, $product);
 
         if ($stmt->execute()) {
@@ -173,12 +173,21 @@ $conn->close();
         <header>
             <h1>Site: <?php echo htmlspecialchars($site); ?> Product: <?php echo htmlspecialchars($product); ?></h1>
             <button id="addExpenseButton" class="add-expense-button" <?php echo $status !== 'active' ? 'disabled' : ''; ?>>Add New Expense</button>
-            <form method="POST" action="" style="display:inline;">
-                <input type="hidden" name="site" value="<?php echo htmlspecialchars($site); ?>">
-                <input type="hidden" name="product" value="<?php echo htmlspecialchars($product); ?>">
-                <button type="submit" name="action" value="update_status" class="update-status-button" <?php echo $status !== 'active' ? 'disabled' : ''; ?>>Mark as Done</button>
-            </form>
+            <form method="POST" action="" style="display:inline;" onsubmit="return confirmMarkAsDone()">
+    <input type="hidden" name="site" value="<?php echo htmlspecialchars($site); ?>">
+    <input type="hidden" name="product" value="<?php echo htmlspecialchars($product); ?>">
+    <button type="submit" name="action" value="update_status" class="update-status-button" <?php echo $status !== 'active' ? 'disabled' : ''; ?>>Push For Approval</button>
+</form>
+
         </header>
+        <div>
+        <div class="totals">
+    <p>Total Allowance: <?php echo htmlspecialchars(number_format($allowanceAmount, 2)); ?></p>
+    <p>Total Expenses: <?php echo htmlspecialchars(number_format($totalExpenses, 2)); ?></p>
+    <p>Remaining Balance: <?php echo htmlspecialchars(number_format($remainingBalance, 2)); ?></p>
+</div>
+
+        </div>
 
         <table class="expense-table">
             <thead>
@@ -224,12 +233,15 @@ $conn->close();
                 <input type="text" id="expense_header" name="expense_header" required>
                 <label for="expense_amount">Expense Amount:</label>
                 <input type="number" id="expense_amount" name="expense_amount" required>
+
                 <label for="expense_date">Date:</label>
                 <input type="date" id="expense_date" name="expense_date" required>
+
                 <label for="file_upload">File Upload (JPG/PDF):</label>
                 <input type="file" id="file_upload" name="file_upload" accept=".jpg, .jpeg, .pdf">
+
                 <button type="submit" name="action" value="add_expense">Submit</button>
-                <button type="button" class="close">Cancel</button>
+                <!-- <button type="button" class="close">Cancel</button> -->
             </form>
         </div>
     </div>
@@ -252,5 +264,28 @@ $conn->close();
             }
         }
     </script>
+    <script>
+    // Get today's date
+    const today = new Date();
+    
+    // Format today's date as YYYY-MM-DD
+    const formattedToday = today.toISOString().split('T')[0];
+    
+    // Calculate the date two days before today
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(today.getDate() - 2);
+    const formattedTwoDaysAgo = twoDaysAgo.toISOString().split('T')[0];
+    
+    // Set min and max attributes for the date input
+    const dateInput = document.getElementById("expense_date");
+    dateInput.setAttribute("max", formattedToday);
+    dateInput.setAttribute("min", formattedTwoDaysAgo);
+</script>
+<script>
+    function confirmMarkAsDone() {
+        return confirm("Are you sure you want to mark this as done?");
+    }
+</script>
+
 </body>
 </html>

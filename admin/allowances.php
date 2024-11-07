@@ -13,24 +13,32 @@ $user_stmt->bind_result($adminid);
 $user_stmt->fetch();
 $user_stmt->close();
 
-// Initialize an empty variable to hold user options
+// Initialize variables to hold user and site options
 $userOptions = "";
+$siteOptions = "";
 
 // Fetch registered users from the database
-$sql = "SELECT userid, firstname, lastname FROM registereduser"; // Adjust according to your table structure
+$sql = "SELECT userid, firstname, lastname FROM registereduser";
 $result = $conn->query($sql);
-
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        // Option value is userid; display is firstname and lastname
         $userOptions .= "<option value='" . $row['userid'] . "'>" . $row['firstname'] . " " . $row['lastname'] . "</option>";
     }
 } else {
     $userOptions = "<option disabled>No registered users available</option>";
 }
 
+// Fetch existing sites from the database
+$site_sql = "SELECT DISTINCT site FROM allowancemaster";
+$site_result = $conn->query($site_sql);
+if ($site_result->num_rows > 0) {
+    while ($site_row = $site_result->fetch_assoc()) {
+        $siteOptions .= "<option value='" . $site_row['site'] . "'>";
+    }
+}
+
 // Check if the form is submitted
-$message = ""; // Initialize the message variable
+$message = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
     $userid = $_POST['userid'];
@@ -38,23 +46,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $site = $_POST['site'];
     $amount = $_POST['amount'];
     $date = $_POST['date'];
-    $status = $_POST['status']; // Added status field
+    $status = $_POST['status'];
 
-    // Prepare the SQL statement to insert data into allowancemaster
+    // Insert data into allowancemaster
     $stmt = $conn->prepare("INSERT INTO allowancemaster (userid, product, site, amount, date, status) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("isssss", $userid, $product, $site, $amount, $date, $status); // Bind status
+    $stmt->bind_param("isssss", $userid, $product, $site, $amount, $date, $status);
 
-    // Execute the statement and check for success
     if ($stmt->execute()) {
         $message = "<p class='success-message'>Allowance added successfully!</p>";
     } else {
         $message = "<p class='error-message'>Error: " . $stmt->error . "</p>";
     }
 
-    // Close the statement and connection
+    // Close statement
     $stmt->close();
-    $conn->close();
 }
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -63,10 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Allowance</title>
-    <style>
-      
-    </style>
-       <link rel="stylesheet" href="../css/allowance.css">
+    <link rel="stylesheet" href="../css/allowance.css">
 </head>
 <body>
 
@@ -90,14 +94,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="userid">Select User:</label>
             <select name="userid" required>
                 <option selected disabled>Select User</option>
-                <?php echo $userOptions; ?> <!-- Insert user options here -->
+                <?php echo $userOptions; ?>
             </select>
 
             <label for="product">Product:</label>
             <input type="text" id="product" name="product" required>
 
             <label for="site">Site:</label>
-            <input type="text" id="site" name="site" required>
+            <input type="text" id="site" name="site" list="siteList" required>
+            <datalist id="siteList">
+                <?php echo $siteOptions; ?>
+            </datalist>
 
             <label for="amount">Amount:</label>
             <input type="number" id="amount" name="amount" required>
@@ -115,7 +122,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button class="addallow" type="submit">Submit</button>
         </form>
 
-        <!-- Display the message below the form -->
         <?php echo $message; ?>
     </div>
 </body>

@@ -107,13 +107,13 @@
             <div class="form-container">
                 <h2>Search User</h2>
                 <form action="" method="post">
-                    <label for="adduser">Search by User Name:</label>
-                    <input list="usernames" id="adduser" name="adduser">
+                    <label for="adduser">User Name:</label>
+                    <input type="text" list="usernames" id="adduser" name="adduser" placeholder="Enter User Name">
                     <datalist id="usernames">
                         <?php foreach ($usernames as $name) echo "<option value='$name'>"; ?>
                     </datalist>
                     <br><br>
-                    <label for="mobile">or Search by Mobile:</label>
+                    <label for="mobile">Mobile:</label>
                     <input type="text" id="mobile" name="mobile" pattern="\d{10}" placeholder="Enter mobile number">
                     <br><br>
                     <button type="submit">Search User</button>
@@ -158,7 +158,7 @@
                                     <select name='status' onchange='updateStatus(this)'>
                                         <option value='active' " . ($transaction['status'] == 'active' ? 'selected' : '') . ">Active</option>
                                         <option value='inactive' " . ($transaction['status'] == 'inactive' ? 'selected' : '') . ">Inactive</option>
-                                        <option value='done' " . ($transaction['status'] == 'done' ? 'selected' : '') . ">Done</option>
+                                        <option value='Pushed For Approval' " . ($transaction['status'] == 'Pushed For Approval' ? 'selected' : '') . ">Pushed For Approval</option>
                                     </select>
                                 </form>
                               </td>";
