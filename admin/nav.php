@@ -1,3 +1,11 @@
+<?php
+// Disable caching
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,11 +16,22 @@
    
 </head>
 <body>
+
+
     <!-- Navigation Bar -->
     <div class="navbar">
-        <a href="nav.php">Home</a>
-        <a href="add_user.php">Add User</a>
-        <a href="allowances.php">Add Allowance</a>
+        <div>
+
+            <a href="nav.php">Home</a>
+        </div>
+        <div>
+
+            <a href="add_user.php">Add User</a>
+        </div>
+        <div>
+
+            <a href="allowances.php">Add Allowance</a>
+        </div>
     </div>
 
     <div class="container">
@@ -33,70 +52,88 @@
         }
 
         // Handle status update (existing functionality)
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status'])) {
-            $site = $_POST['site'];
-            $product = $_POST['product'];
-            $userid = $_POST['userid'];
-            $status = $_POST['status'];
+// Handle status update (existing functionality)
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status'])) {
+    $site = $_POST['site'];
+    $product = $_POST['product'];
+    $userid = $_POST['userid'];
+    $status = $_POST['status'];
 
-            $response = [];
-            if ($status === 'active') {
-                $activeCheck = $conn->prepare("SELECT site FROM allowancemaster WHERE status = 'active' AND userid = ?");
-                $activeCheck->bind_param("i", $userid);
-                $activeCheck->execute();
-                $activeCheck->bind_result($activeSite);
-                $activeCheck->fetch();
-                $activeCheck->close();
+    $response = [];  // Initialize response array
 
-                if ($activeSite) {
-                    $response['success'] = false;
-                    $response['message'] = 'Please deactivate the site "' . $activeSite . '" first.';
-                } else {
-                    $stmt = $conn->prepare("UPDATE allowancemaster SET status = ? WHERE site = ? AND product = ? AND userid = ?");
-                    $stmt->bind_param("sssi", $status, $site, $product, $userid);
-                    $stmt->execute();
-                    $stmt->close();
-                    $response['success'] = true;
-                }
-            } else {
-                $stmt = $conn->prepare("UPDATE allowancemaster SET status = ? WHERE site = ? AND product = ? AND userid = ?");
-                $stmt->bind_param("sssi", $status, $site, $product, $userid);
-                $stmt->execute();
-                $stmt->close();
-                $response['success'] = true;
-            }
-            echo json_encode($response);
-            exit;
+    if ($status === 'active') {
+        // Check if there is already an active site for this user
+        $activeCheck = $conn->prepare("SELECT site FROM allowancemaster WHERE status = 'active' AND userid = ?");
+        $activeCheck->bind_param("i", $userid);
+        $activeCheck->execute();
+        $activeCheck->bind_result($activeSite);
+        $activeCheck->fetch();
+        $activeCheck->close();
+
+        if ($activeSite) {
+            $response['success'] = false;
+            $response['message'] = 'Please deactivate the site "' . $activeSite . '" first.';
+        } else {
+            // Update status if no active site found
+            $stmt = $conn->prepare("UPDATE allowancemaster SET status = ? WHERE site = ? AND product = ? AND userid = ?");
+            $stmt->bind_param("sssi", $status, $site, $product, $userid);
+            $stmt->execute();
+            $stmt->close();
+            $response['success'] = true;
+            $response['message'] = 'Status updated to active successfully.';
         }
+    } else {
+        // Update status to inactive or another value
+        $stmt = $conn->prepare("UPDATE allowancemaster SET status = ? WHERE site = ? AND product = ? AND userid = ?");
+        $stmt->bind_param("sssi", $status, $site, $product, $userid);
+        $stmt->execute();
+        $stmt->close();
+        $response['success'] = true;
+        $response['message'] = 'Status updated successfully.';
+    }
+
+    // Always return JSON response
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit;
+}
+
+
 
         // Fetch transactions based on search input
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && (!empty($_POST['adduser']) || !empty($_POST['mobile']))) {
-            $username = $_POST['adduser'];
-            $mobile = $_POST['mobile'];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && (!empty($_POST['adduser']) || !empty($_POST['mobile']))) {
+    $username = $_POST['adduser'];
+    $mobile = $_POST['mobile'];
 
-            $stmt = $conn->prepare("
-                SELECT ru.userid, ru.firstname, ru.lastname, ru.mobile, ru.email, ru.userrole, 
-                       al.product, al.site, al.amount, al.date, al.status,
-                       (SELECT COALESCE(SUM(e.expense_amount), 0) 
-                        FROM expense e 
-                        WHERE e.product = al.product AND e.site = al.site ) AS total_expense
-                FROM registereduser ru
-                LEFT JOIN allowancemaster al ON ru.userid = al.userid
-                WHERE (CONCAT(ru.firstname, ' ', ru.lastname) = ? OR ru.mobile = ?)
-            ");
-            $stmt->bind_param("ss", $username, $mobile);
-            $stmt->execute();
-            $result = $stmt->get_result();
+    $stmt = $conn->prepare("
+        SELECT ru.userid, ru.firstname, ru.lastname, ru.mobile, ru.email, ru.userrole, 
+               al.product, al.site, al.amount, al.date, al.status,
+               (SELECT COALESCE(SUM(e.expense_amount), 0) 
+                FROM expense e 
+                WHERE e.product = al.product AND e.site = al.site ) AS total_expense
+        FROM registereduser ru
+        LEFT JOIN allowancemaster al ON ru.userid = al.userid
+        WHERE (CONCAT(ru.firstname, ' ', ru.lastname) = ? OR ru.mobile = ?)
+    ");
+    $stmt->bind_param("ss", $username, $mobile);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-            if ($result->num_rows > 0) {
-                while ($transaction = $result->fetch_assoc()) {
-                    $transaction_info[] = $transaction;
-                }
-            } else {
-                $user_info = "No user found with the provided details.";
-            }
-            $stmt->close();
+    if ($result->num_rows > 0) {
+        while ($transaction = $result->fetch_assoc()) {
+            $transaction_info[] = $transaction;
         }
+
+        // Sort transactions: "active" status first
+        usort($transaction_info, function ($a, $b) {
+            return ($a['status'] === 'active' ? -1 : 1);
+        });
+    } else {
+        $user_info = "No user found with the provided details.";
+    }
+    $stmt->close();
+}
+
         $conn->close();
         ?>
 
@@ -121,7 +158,7 @@
             </div>
 
             <!-- Display User Information -->
-            <div class="user-info">
+            <div class="table-container">
                 <h2>User Information</h2>
                 <?php
 if (!empty($transaction_info)) {
@@ -197,34 +234,49 @@ if (!empty($transaction_info)) {
     </div>
 
     <script>
-        function updateStatus(selectElement) {
-            const form = selectElement.closest('.status-form');
-            const status = selectElement.value;
-            const site = form.dataset.site;
-            const product = form.dataset.product;
-            const userid = form.dataset.userid;
+function updateStatus(selectElement) {
+    const form = selectElement.closest('.status-form');
+    const status = selectElement.value;
+    const site = form.dataset.site;
+    const product = form.dataset.product;
+    const userid = form.dataset.userid;
 
-            const data = new FormData();
-            data.append('update_status', true);
-            data.append('site', site);
-            data.append('product', product);
-            data.append('userid', userid);
-            data.append('status', status);
+    const data = new FormData();
+    data.append('update_status', true);
+    data.append('site', site);
+    data.append('product', product);
+    data.append('userid', userid);
+    data.append('status', status);
 
-            fetch('', {
-                method: 'POST',
-                body: data
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    document.getElementById('status-message').innerText = "Status updated successfully!";
-                } else {
-                    document.getElementById('status-message').innerText = result.message;
-                }
-            })
-            .catch(error => console.error('Error:', error));
+    fetch('', {
+        method: 'POST',
+        body: data
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
+        return response.json();
+    })
+    .then(result => {
+        const statusMessage = document.getElementById('status-message');
+        if (result.success) {
+            statusMessage.innerText = result.message;
+            statusMessage.style.color = 'green';  // Success message color
+        } else {
+            statusMessage.innerText = result.message;
+            statusMessage.style.color = 'red';  // Error message color
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        const statusMessage = document.getElementById('status-message');
+        statusMessage.innerText = 'An error occurred while updating the status.';
+        statusMessage.style.color = 'red';
+    });
+}
+
+
     </script>
 
 </body>
