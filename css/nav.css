@@ -16,6 +16,7 @@ body {
     padding: 20px;
     font-family: 'Arial', sans-serif;
     color: #333;
+
 }
 
 /* Navbar Styling */
@@ -38,8 +39,9 @@ body {
     text-decoration: none;
     font-weight: bold;
     transition: background 0.3s, color 0.3s;
-    margin: 0 10px;
+    /* margin: 0 10px; */
     border-radius: 4px;
+    font-size: 16px;
 }
 
 .navbar a:hover {
@@ -85,6 +87,7 @@ body {
     text-align: left;
     width: 100%;
     max-width: 100px;
+    /* margin-right: 260px; */
 }
 
 .form-container input[type="text"] {
@@ -222,7 +225,23 @@ tr:hover {
         padding: 10px 20px;
         font-size: 0.9rem;
     }
+
+
+    label {
+       
+        margin-right: 260px;
+    }
+
+
 }
+
+
+
+
+
+
+
+
 
 
 

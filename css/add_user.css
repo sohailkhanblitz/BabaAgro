@@ -1,10 +1,10 @@
 /* Navbar Styling */
 .navbar {
-    width: 100%;
+    width: 106%;
     background-color: #333;
     display: flex;
     justify-content: center;
-    padding: 10px;
+    /* padding: 10px; */
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
     position: fixed;
     top: 0;
@@ -14,12 +14,16 @@
 .navbar a {
     color: #fff;
     text-align: center;
-    padding: 10px 20px;
+    padding: 10px;
     text-decoration: none;
     font-weight: bold;
     transition: background 0.3s, color 0.3s;
     margin: 0 10px;
     border-radius: 4px;
+    font-size: 16px
+
+    
+
 }
 
 .navbar a:hover {
@@ -56,6 +60,8 @@ body {
     align-items: center;
     justify-content: center;
     color: #333;
+
+    
 }
 
 .container {
@@ -177,4 +183,65 @@ input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+
+
+
+@media (max-width: 768px) {
+    .container {
+        max-width: 90%;
+        padding: 1.5rem;
+        margin-top: 100px; /* Adjust for fixed navbar */
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="email"] {
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    button[type="submit"] {
+        padding: 1rem;
+        font-size: 1.1rem;
+    }
+
+    a {
+        font-size: 1rem;
+        
+    }
+}
+
+/* For devices with a max-width of 480px (Mobile) */
+@media (max-width: 480px) {
+    .container {
+        max-width: 95%;
+        padding: 1rem;
+        margin-top: 60px; /* More space for fixed navbar */
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="email"] {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+    }
+
+    button[type="submit"] {
+        padding: 0.9rem;
+        font-size: 1rem;
+    }
+
+    a {
+        font-size: 0.9rem;
+    }
 }

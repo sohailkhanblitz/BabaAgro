@@ -54,10 +54,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <!-- Navigation Bar -->
     <div class="navbar">
-        <a href="nav.php">Home</a>
-        <a href="add_user.php">Add User</a>
-        <a href="allowances.php">Add Allowance</a>
+        <div>
+            <a href="nav.php">Home</a>
+        </div>
+
+        <div>
+            <a href="add_user.php">Add User</a>
+        </div>
+        
+        <div>
+            <a href="allowances.php">Add Allowance</a>
+        </div>
     </div>
+
 
     <div class="container">
         <form action="" method="post">
