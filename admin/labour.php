@@ -85,18 +85,7 @@ if (isset($_POST['siteFilter']) || isset($_POST['productFilter'])) {
     $details = $_SESSION['userDetails'][0];
 ?>
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-    </tr>
-    <tr>
-        <td><?php echo htmlspecialchars($details['firstname'] . " " . $details['lastname']); ?></td>
-        <td><?php echo htmlspecialchars($details['email']); ?></td>
-        <td><?php echo htmlspecialchars($details['userrole']); ?></td>
-    </tr>
-</table>
+
 
                 <!-- Site Filter Dropdown -->
                 <label for="siteFilter">Filter by Site:</label>
@@ -119,6 +108,18 @@ if (isset($_POST['siteFilter']) || isset($_POST['productFilter'])) {
                         }
                     ?>
                 </select>
+                <table border="1" cellpadding="10">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+    </tr>
+    <tr>
+        <td><?php echo htmlspecialchars($details['firstname'] . " " . $details['lastname']); ?></td>
+        <td><?php echo htmlspecialchars($details['email']); ?></td>
+        <td><?php echo htmlspecialchars($details['userrole']); ?></td>
+    </tr>
+</table>
 
                 <!-- Allowance Table -->
                 <table id="allowanceTable" border="1" style="width:100%; margin-top:20px;">
