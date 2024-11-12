@@ -58,18 +58,36 @@ $conn->close();
     </div>
 
     <div class="container">
-        <header><h1>Transaction Details for Site: <?php echo htmlspecialchars($site); ?> | Product: <?php echo htmlspecialchars($product); ?></h1></header>
+
+       <div class="btn">
+       <a href="nav.php"><button class="bbtn">Back</button></a>       </div>
+
+        <p class="site-product-info">
+            <span class="site">Site, <?php echo htmlspecialchars($site); ?></span>
+            <span class="product">Product: <?php echo htmlspecialchars($product); ?></span>
+        </p>
 
         <!-- User Info -->
+        
         <div class="user-info">
             <h2>User Information</h2>
-            <p><strong>User ID:</strong> <?php echo htmlspecialchars($userid); ?></p>
-            <p><strong>Name:</strong> <?php echo htmlspecialchars($firstname . ' ' . $lastname); ?></p>
-            <p><strong>Mobile:</strong> <?php echo htmlspecialchars($mobile); ?></p>
-            <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
-            <p><strong>User Role:</strong> <?php echo htmlspecialchars($userrole); ?></p>
+            <table>
+                <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>User Role</th>
+                </tr>
+                <tr>
+                    <td><?php echo htmlspecialchars($userid); ?></td>
+                    <td><?php echo htmlspecialchars($firstname . ' ' . $lastname); ?></td>
+                    <td><?php echo htmlspecialchars($mobile); ?></td>
+                    <td><?php echo htmlspecialchars($email); ?></td>
+                    <td><?php echo htmlspecialchars($userrole); ?></td>
+                </tr>
+            </table>
         </div>
-
         <!-- Transaction Info -->
         <div class="transaction-info">
             <h2>Transaction History</h2>
@@ -108,7 +126,7 @@ $conn->close();
         </div>
 
         <!-- Back Button -->
-        <a href="nav.php" class="back-btn">Back to Dashboard</a>
+       
     </div>
 
 </body>
