@@ -2,13 +2,29 @@
 session_start();
 include 'db_connection.php';
 
-// Check if the necessary data is passed via POST
-if (isset($_POST['site']) && isset($_POST['product']) && isset($_POST['userid'])) {
-    $site = $_POST['site'];
-    $product = $_POST['product'];
-    $userid = $_POST['userid'];
+// Initialize variables
+$site = $product = $userid = null;
 
-    // Fetch user information (to display on the page)
+// Check if site, product, and userid are passed via GET, if not, fetch from the database
+if (isset($_GET['site']) && isset($_GET['product']) && isset($_GET['userid'])) {
+    // Fetch data from GET parameters
+    $site = $_GET['site'];
+    $product = $_GET['product'];
+    $userid = $_GET['userid'];
+} else {
+    // If parameters are missing, fetch the first available data from the database
+    $stmt = $conn->prepare("
+        SELECT e.site, e.product, e.createdby 
+        FROM expense e 
+        LIMIT 1");
+    $stmt->execute();
+    $stmt->bind_result($site, $product, $userid);
+    $stmt->fetch();
+    $stmt->close();
+}
+
+if ($site && $product && $userid) {
+    // Fetch user information for the given userid
     $stmt = $conn->prepare("SELECT userid, firstname, lastname, mobile, email, userrole FROM registereduser WHERE userid = ?");
     $stmt->bind_param("i", $userid);
     $stmt->execute();
@@ -32,9 +48,8 @@ if (isset($_POST['site']) && isset($_POST['product']) && isset($_POST['userid'])
     }
     $stmt->close();
 } else {
-    // If no site, product or userid is passed, redirect to dashboard
-    header("Location: dashboard.php");
-    exit;
+    $transactions = [];
+    $errorMessage = "Missing or invalid parameters.";
 }
 
 $conn->close();
@@ -60,10 +75,12 @@ $conn->close();
     <div class="container">
 
        <div class="btn">
-       <a href="nav.php"><button class="bbtn">Back</button></a>       </div>
+           <a href="nav.php"><button class="bbtn">Back</button></a>       
+       </div>
 
+        <?php if (isset($site) && isset($product) && isset($userid)) { ?>
         <p class="site-product-info">
-            <span class="site">Site, <?php echo htmlspecialchars($site); ?></span>
+            <span class="site">Site: <?php echo htmlspecialchars($site); ?></span>
             <span class="product">Product: <?php echo htmlspecialchars($product); ?></span>
         </p>
 
@@ -124,9 +141,11 @@ $conn->close();
                 </div>
             <?php } ?>
         </div>
-
-        <!-- Back Button -->
-       
+        <?php } else { ?>
+            <div class="error-message">
+                <p><?php echo htmlspecialchars($errorMessage ?? 'Invalid parameters provided.'); ?></p>
+            </div>
+        <?php } ?>
     </div>
 
 </body>

@@ -1,109 +1,26 @@
 <?php
-// Disable caching
+// PHP Logic for handling AJAX search and fetching usernames
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
-?>
 
+session_start();
+include 'db_connection.php';
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application Home</title>
-    <link rel="stylesheet" href="../css/nav.css">
-   
-</head>
-<body>
+// Fetch usernames for the dropdown
+$usernames = [];
+$query = "SELECT CONCAT(firstname, ' ', lastname) AS fullname FROM registereduser";
+$result = $conn->query($query);
 
-
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        <div>
-
-            <a href="nav.php">Home</a>
-        </div>
-        <div>
-
-            <a href="add_user.php">Add User</a>
-        </div>
-        <div>
-
-            <a href="allowances.php">Add Allowance</a>
-        </div>
-    </div>
-
-    <div class="container">
-        <?php
-        session_start();
-        include 'db_connection.php';
-
-        $user_info = "";
-        $transaction_info = [];
-
-        // Fetch all users for search dropdown
-        $userOptions = "";
-        $usernames = [];
-        $sql = "SELECT firstname, lastname, mobile FROM registereduser";
-        $result = $conn->query($sql);
-        while ($row = $result->fetch_assoc()) {
-            $usernames[] = $row['firstname'] . " " . $row['lastname'];
-        }
-
-        // Handle status update (existing functionality)
-// Handle status update (existing functionality)
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_status'])) {
-    $site = $_POST['site'];
-    $product = $_POST['product'];
-    $userid = $_POST['userid'];
-    $status = $_POST['status'];
-
-    $response = [];  // Initialize response array
-
-    if ($status === 'active') {
-        // Check if there is already an active site for this user
-        $activeCheck = $conn->prepare("SELECT site FROM allowancemaster WHERE status = 'active' AND userid = ?");
-        $activeCheck->bind_param("i", $userid);
-        $activeCheck->execute();
-        $activeCheck->bind_result($activeSite);
-        $activeCheck->fetch();
-        $activeCheck->close();
-
-        if ($activeSite) {
-            $response['success'] = false;
-            $response['message'] = 'Please deactivate the site "' . $activeSite . '" first.';
-        } else {
-            // Update status if no active site found
-            $stmt = $conn->prepare("UPDATE allowancemaster SET status = ? WHERE site = ? AND product = ? AND userid = ?");
-            $stmt->bind_param("sssi", $status, $site, $product, $userid);
-            $stmt->execute();
-            $stmt->close();
-            $response['success'] = true;
-            $response['message'] = 'Status updated to active successfully.';
-        }
-    } else {
-        // Update status to inactive or another value
-        $stmt = $conn->prepare("UPDATE allowancemaster SET status = ? WHERE site = ? AND product = ? AND userid = ?");
-        $stmt->bind_param("sssi", $status, $site, $product, $userid);
-        $stmt->execute();
-        $stmt->close();
-        $response['success'] = true;
-        $response['message'] = 'Status updated successfully.';
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $usernames[] = $row['fullname'];
     }
-
-    // Always return JSON response
-    header('Content-Type: application/json');
-    echo json_encode($response);
-    exit;
 }
 
-
-
-        // Fetch transactions based on search input
-if ($_SERVER["REQUEST_METHOD"] == "POST" && (!empty($_POST['adduser']) || !empty($_POST['mobile']))) {
-    $username = $_POST['adduser'];
-    $mobile = $_POST['mobile'];
+if (isset($_POST['action']) && $_POST['action'] == 'search_user') {
+    $username = $_POST['adduser'] ?? '';
+    $mobile = $_POST['mobile'] ?? '';
 
     $stmt = $conn->prepare("
         SELECT ru.userid, ru.firstname, ru.lastname, ru.mobile, ru.email, ru.userrole, 
@@ -119,165 +36,174 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && (!empty($_POST['adduser']) || !empty
     $stmt->execute();
     $result = $stmt->get_result();
 
+    $transaction_info = [];
     if ($result->num_rows > 0) {
         while ($transaction = $result->fetch_assoc()) {
             $transaction_info[] = $transaction;
         }
 
-        // Sort transactions: "active" status first
-        usort($transaction_info, function ($a, $b) {
-            return ($a['status'] === 'active' ? -1 : 1);
-        });
+        $_SESSION['user_data'] = $transaction_info[0];
+        $_SESSION['transaction_data'] = $transaction_info;
     } else {
-        $user_info = "No user found with the provided details.";
+        $transaction_info = "No user found with the provided details.";
     }
     $stmt->close();
+
+    echo json_encode($transaction_info);
+    exit;
 }
 
-        $conn->close();
-        ?>
-
-        <div class="dashboard">
-            <header><h1>Dashboard</h1></header>
-
-            <!-- Search User Form with Dropdown Suggestions and Mobile Number Search -->
-            <div class="form-container">
-                <h2>Search User</h2>
-                <form action="" method="post">
-                    <label for="adduser">User Name:</label>
-                    <input type="text" list="usernames" id="adduser" name="adduser" placeholder="Enter User Name">
-                    <datalist id="usernames">
-                        <?php foreach ($usernames as $name) echo "<option value='$name'>"; ?>
-                    </datalist>
-                    <br><br>
-                    <label for="mobile">Mobile:</label>
-                    <input type="text" id="mobile" name="mobile" pattern="\d{10}" placeholder="Enter mobile number">
-                    <br><br>
-                    <button type="submit">Search User</button>
-                </form>
-            </div>
-
-            <!-- Display User Information -->
-            <div class="table-container">
-                <h2>User Information</h2>
-                <?php
-if (!empty($transaction_info)) {
-    echo "<table border='1' cellpadding='10' cellspacing='0'>";
-    echo "<tr>";
-    echo "<th>User ID</th>";
-    echo "<th>First Name</th>";
-    echo "<th>Last Name</th>";
-    echo "<th>Mobile</th>";
-    echo "<th>Email</th>";
-    echo "<th>User Role</th>";
-    echo "</tr>";
-    echo "<tr>";
-    echo "<td>" . htmlspecialchars($transaction_info[0]['userid']) . "</td>";
-    echo "<td>" . htmlspecialchars($transaction_info[0]['firstname']) . "</td>";
-    echo "<td>" . htmlspecialchars($transaction_info[0]['lastname']) . "</td>";
-    echo "<td>" . htmlspecialchars($transaction_info[0]['mobile']) . "</td>";
-    echo "<td>" . htmlspecialchars($transaction_info[0]['email']) . "</td>";
-    echo "<td>" . htmlspecialchars($transaction_info[0]['userrole']) . "</td>";
-    echo "</tr>";
-    echo "</table>";
-} else {
-    echo "<p>" . htmlspecialchars($user_info) . "</p>";
-}
+$conn->close();
 ?>
 
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../css/nav.css">
+</head>
+<body>
 
-            <!-- Display Transaction Information -->
-            <div class="transaction-info">
-                <h2>Transaction History</h2>
-                <div id="status-message"></div> <!-- Message display area -->
-                <?php
-                if (!empty($transaction_info[0]['product'])) {
-                    echo "<div class='table-container'>";
-                    echo "<table>";
-                    echo "<tr><th>Date</th><th>Product</th><th>Site</th><th>Allowance</th><th>Total Expense</th><th>Status</th><th>Info</th></tr>";
-                    foreach ($transaction_info as $transaction) {
-                        echo "<tr>";
-                        echo "<td>" . $transaction['date'] . "</td>";
-                        echo "<td>" . $transaction['product'] . "</td>";
-                        echo "<td>" . $transaction['site'] . "</td>";
-                        echo "<td>" . $transaction['amount'] . "</td>";
-                        echo "<td>" . $transaction['total_expense'] . "</td>";
-                        echo "<td>
-                                <form class='status-form' data-userid='" . $transaction['userid'] . "' data-site='" . $transaction['site'] . "' data-product='" . $transaction['product'] . "' style='display:inline;'>
-                                    <select name='status' onchange='updateStatus(this)'>
-                                        <option value='active' " . ($transaction['status'] == 'active' ? 'selected' : '') . ">Active</option>
-                                        <option value='inactive' " . ($transaction['status'] == 'inactive' ? 'selected' : '') . ">Inactive</option>
-                                        <option value='Pushed For Approval' " . ($transaction['status'] == 'Pushed For Approval' ? 'selected' : '') . ">Pushed For Approval</option>
-                                    </select>
-                                </form>
-                              </td>";
-                        echo "<td>
-                                <form action='transaction_details.php' method='post' style='display:inline;'>
-                                    <input type='hidden' name='site' value='" . $transaction['site'] . "'>
-                                    <input type='hidden' name='product' value='" . $transaction['product'] . "'>
-                                    <input type='hidden' name='userid' value='" . $transaction['userid'] . "'>
-                                    <button type='submit' class='info-btn'>Details</button>
-                                </form>
-                              </td>";
-                        echo "</tr>";
-                    }
-                    echo "</table>";
-                    echo "</div>";
-                }
-                else{
-                    echo "No transaction found";
-                }
-                ?>
-            </div>
-        </div>
+<div class="navbar">
+    <a href="nav.php">Home</a>
+    <a href="add_user.php">Add User</a>
+    <a href="allowances.php">Add Allowance</a>
+</div>
+
+<div class="container">
+    <h1>Dashboard</h1>
+    
+    <!-- Search Form -->
+    <div class="form-container">
+        <h2>Search User</h2>
+        <label for="adduser">User Name:</label>
+        <select id="adduser" name="adduser">
+            <option value="">Select User</option>
+            <?php foreach ($usernames as $name): ?>
+                <option value="<?php echo htmlspecialchars($name); ?>"><?php echo htmlspecialchars($name); ?></option>
+            <?php endforeach; ?>
+        </select>
+        <br><br>
+        <label for="mobile">Mobile:</label>
+        <input type="text" id="mobile" name="mobile" placeholder="Enter Mobile Number">
+        <br><br>
+        <button onclick="searchUser()">Search User</button>
     </div>
 
-    <script>
-function updateStatus(selectElement) {
-    const form = selectElement.closest('.status-form');
-    const status = selectElement.value;
-    const site = form.dataset.site;
-    const product = form.dataset.product;
-    const userid = form.dataset.userid;
+    <!-- Display User Information -->
+    <div class="user-info" id="user-info">
+        <!-- User information will be displayed here -->
+    </div>
 
-    const data = new FormData();
-    data.append('update_status', true);
-    data.append('site', site);
-    data.append('product', product);
-    data.append('userid', userid);
-    data.append('status', status);
+    <!-- Display Transaction Information -->
+    <div class="transaction-info" id="transaction-info">
+        <!-- Transaction information will be displayed here -->
+    </div>
+</div>
 
-    fetch('', {
-        method: 'POST',
-        body: data
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(result => {
-        const statusMessage = document.getElementById('status-message');
-        if (result.success) {
-            statusMessage.innerText = result.message;
-            statusMessage.style.color = 'green';  // Success message color
-        } else {
-            statusMessage.innerText = result.message;
-            statusMessage.style.color = 'red';  // Error message color
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        const statusMessage = document.getElementById('status-message');
-        statusMessage.innerText = 'An error occurred while updating the status.';
-        statusMessage.style.color = 'red';
-    });
+<script>
+
+function searchUser() {
+    const adduser = document.getElementById('adduser').value;
+    const mobile = document.getElementById('mobile').value;
+
+    // Execute the search with current values
+    executeSearch(adduser, mobile);
+
+    // Store the search input in session storage
+    sessionStorage.setItem('adduser', adduser);
+    sessionStorage.setItem('mobile', mobile);
+
+    // Clear the input fields after storing in session
+    document.getElementById('adduser').value = '';
+    document.getElementById('mobile').value = '';
 }
 
+function executeSearch(adduser, mobile) {
+    fetch('', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            action: 'search_user',
+            adduser: adduser,
+            mobile: mobile
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (typeof data === 'string') {
+            document.getElementById('user-info').innerHTML = `<p>${data}</p>`;
+            document.getElementById('transaction-info').innerHTML = '';
+        } else {
+            let userInfo = `
+                <h2>User Information</h2>
+                <table border="1" cellpadding="10" cellspacing="0">
+                    <tr>
+                        <th>User ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Mobile</th>
+                        <th>Email</th>
+                        <th>User Role</th>
+                    </tr>
+                    <tr>
+                        <td>${data[0].userid}</td>
+                        <td>${data[0].firstname}</td>
+                        <td>${data[0].lastname}</td>
+                        <td>${data[0].mobile}</td>
+                        <td>${data[0].email}</td>
+                        <td>${data[0].userrole}</td>
+                    </tr>
+                </table>`;
+            document.getElementById('user-info').innerHTML = userInfo;
 
-    </script>
+            let transactionInfo = `
+                <h2>Transaction History</h2>
+                <table border="1" cellpadding="10" cellspacing="0">
+                    <tr>
+                        <th>Date</th>
+                        <th>Product</th>
+                        <th>Site</th>
+                        <th>Allowance</th>
+                        <th>Total Expense</th>
+                        <th>Status</th>
+                        <th>Info</th>
+                    </tr>`;
+            data.forEach(transaction => {
+                transactionInfo += `
+                    <tr>
+                        <td>${transaction.date}</td>
+                        <td>${transaction.product}</td>
+                        <td>${transaction.site}</td>
+                        <td>${transaction.amount}</td>
+                        <td>${transaction.total_expense}</td>
+                        <td>${transaction.status}</td>
+                        <td><a href="transaction_details.php?product=${encodeURIComponent(transaction.product)}&site=${encodeURIComponent(transaction.site)}&userid=${encodeURIComponent(transaction.userid)}">Details</a></td>
+
+                    </tr>`;
+            });
+            transactionInfo += '</table>';
+            document.getElementById('transaction-info').innerHTML = transactionInfo;
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+window.onload = function() {
+    const storedUsername = sessionStorage.getItem('adduser');
+    const storedMobile = sessionStorage.getItem('mobile');
+
+    if (storedUsername || storedMobile) {
+        // document.getElementById('adduser').value = storedUsername || '';
+        // document.getElementById('mobile').value = storedMobile || '';
+        executeSearch(storedUsername, storedMobile);
+    }
+};
+</script>
 
 </body>
 </html>
