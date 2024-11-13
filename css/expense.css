@@ -182,6 +182,7 @@ header button:hover:not(:disabled),
   /* transition: background 0.3s, transform 0.2s; */
   /* padding: 12px 24px; */
   /* font-weight: bold; */
+  margin-top: 15px;
 }
 
 .modal-content button:hover {
@@ -299,3 +300,7 @@ header button:not(:last-child),
 
 
 
+.required {
+  color: red;
+  font-weight: bold;
+}

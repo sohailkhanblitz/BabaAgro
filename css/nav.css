@@ -237,9 +237,10 @@ tr:hover {
 
 
 
-
-
-
+.error-message {
+    color: red; /* Set the text color to red */
+    font-weight: bold; /* Make the text bold */
+}
 
 
 

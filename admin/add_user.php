@@ -84,15 +84,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="email">Enter Email:</label>
             <input type="email" id="email" name="email" required>
 
+            <!-- <label for="user">User Role:</label>
+            <input type="text" id="user" name="user" required> -->
+
+
             <label for="user">User Role:</label>
-            <input type="text" id="user" name="user" required>
+            <select name="user" required >
+                <option selected disabled>Select Role</option>
+                <option value="Employee">Employee</option>
+                <option value="Contractor">Contractor</option>
+            </select>
+
+
+
 
             <button class="adduser" type="submit">Add User</button>
         </form>
+        <?php echo $message; ?>
+
     </div>
 
         <!-- Display the message below the form -->
-        <?php echo $message; ?>
 
 </body>
 </html>

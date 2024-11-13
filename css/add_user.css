@@ -114,6 +114,9 @@ input[type="email"] {
     border-radius: 5px;
     border: 1px solid #ddd;
     transition: border-color 0.3s ease;
+
+
+    
 }
 
 input[type="text"]:focus,
@@ -170,7 +173,7 @@ a:hover {
 p {
     margin-top: 1rem;
     font-size: 0.9rem;
-    color: red;
+    color: green ;
 }
 
 
@@ -244,4 +247,30 @@ input[type="number"]::-webkit-outer-spin-button {
     a {
         font-size: 0.9rem;
     }
+}
+
+select[name="user"] {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    font-size: 1rem;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* On Focus */
+select[name="user"]:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.4);
+}
+
+/* Option Styling */
+select[name="user"] option {
+    padding: 0.5rem;
+    background-color: #ffffff;
+    color: #333;
 }
