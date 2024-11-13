@@ -118,8 +118,8 @@ $conn->close();
             <label for="status">Status:</label>
             <select name="status" required>
                 <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="done">Done</option>
+                <option value="Settled">Settled</option>
+                <option value="Push For Settlement">Push For Settlement</option>
             </select>
 
             <button class="addallow" type="submit">Submit</button>

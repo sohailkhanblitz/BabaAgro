@@ -180,7 +180,7 @@ $conn->close();
             <form method="POST" action="" style="display:inline;" onsubmit="return confirmMarkAsDone()">
     <input type="hidden" name="site" value="<?php echo htmlspecialchars($site); ?>">
     <input type="hidden" name="product" value="<?php echo htmlspecialchars($product); ?>">
-    <button type="submit" name="action" value="update_status" class="update-status-button" <?php echo $status !== 'active' ? 'disabled' : ''; ?>>Push For Approval</button>
+    <button type="submit" name="action" value="update_status" class="update-status-button" <?php echo $status !== 'active' ? 'disabled' : ''; ?>>Push For  Settlement</button>
 </form>
 
         </header>
@@ -233,15 +233,15 @@ $conn->close();
             <form method="POST" action="" enctype="multipart/form-data">
                 <input type="hidden" name="site" value="<?php echo htmlspecialchars($site); ?>">
                 <input type="hidden" name="product" value="<?php echo htmlspecialchars($product); ?>">
-                <label for="expense_header">Expense Header:</label>
+                <label for="expense_header">Expense Header: <span class="required">*</span></label>
                 <input type="text" id="expense_header" name="expense_header" required>
-                <label for="expense_amount">Expense Amount:</label>
+                <label for="expense_amount">Expense Amount: <span class="required">*</span></label>
                 <input type="number" id="expense_amount" name="expense_amount" required>
 
                 <label for="expense_date">Date:</label>
                 <input type="date" id="expense_date" name="expense_date" required>
 
-                <label for="file_upload">File Upload (JPG/PDF):</label>
+                <label for="file_upload">File Upload (JPG/PDF):</label><div style="font-size:15px;">The file size limit should not exceed 35MB</div>
                 <input type="file" id="file_upload" name="file_upload" accept=".jpg, .jpeg, .pdf">
 
                 <button type="submit" name="action" value="add_expense">Submit</button>
@@ -269,7 +269,7 @@ $conn->close();
         }
     </script>
     <script>
-    // Get today's date
+   
     const today = new Date();
     
     // Format today's date as YYYY-MM-DD
@@ -282,14 +282,18 @@ $conn->close();
     
     // Set min and max attributes for the date input
     const dateInput = document.getElementById("expense_date");
-    dateInput.setAttribute("max", formattedToday);
     dateInput.setAttribute("min", formattedTwoDaysAgo);
+    dateInput.setAttribute("max", formattedToday);
+    dateInput.value = formattedToday; // Set default date to today
+
+    
 </script>
 <script>
     function confirmMarkAsDone() {
-        return confirm("Are you sure you want to mark this as done?");
+        return confirm("Are you sure you want to push for settlement?");
     }
 </script>
+
 
 </body>
 </html>
