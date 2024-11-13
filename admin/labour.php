@@ -54,12 +54,12 @@ if (isset($_GET['mobile'])) {
 </head>
 <body>
     <div class="container">
-        <h2>User Information</h2>
+        <h2>User Login</h2>
 
         <!-- Mobile Number Input and Search Button -->
         <label for="mobile">Mobile Number:</label>
         <input type="text" id="mobile" required placeholder="Enter your mobile number">
-        <button onclick="searchUser()">Search</button>
+        <button type="submit" onclick="searchUser()">Search</button>
 
         <?php if ($showDetails && isset($_SESSION['userDetails']) && !empty($_SESSION['userDetails'])): ?>
         <!-- Additional Details -->

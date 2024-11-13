@@ -16,7 +16,6 @@ body {
     padding: 20px;
     font-family: 'Arial', sans-serif;
     color: #333;
-
 }
 
 /* Navbar Styling */
@@ -39,7 +38,6 @@ body {
     text-decoration: none;
     font-weight: bold;
     transition: background 0.3s, color 0.3s;
-    /* margin: 0 10px; */
     border-radius: 4px;
     font-size: 16px;
 }
@@ -87,10 +85,9 @@ body {
     text-align: left;
     width: 100%;
     max-width: 100px;
-    /* margin-right: 260px; */
 }
 
-.form-container input[type="text"] {
+.form-container select, .form-container input[type="text"] {
     padding: 10px;
     width: 100%;
     max-width: 400px;
@@ -98,10 +95,9 @@ body {
     border-radius: 8px;
     margin-bottom: 1rem;
     transition: border-color 0.3s, box-shadow 0.3s;
-    margin-right: 105px;
 }
 
-.form-container input[type="text"]:focus {
+.form-container select:focus, .form-container input[type="text"]:focus {
     border-color: #4a90e2;
     box-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
     outline: none;
@@ -177,7 +173,8 @@ tr:hover {
 
 /* Info Button Styling */
 .info-btn {
-    background: linear-gradient(90deg, #28a745, #218838);
+    /* background: linear-gradient(90deg, #28a745, #218838); */
+    background: linear-gradient(90deg, #357abd, #4a90e2);
     color: #fff;
     padding: 8px 16px;
     border: none;
@@ -190,7 +187,8 @@ tr:hover {
 }
 
 .info-btn:hover {
-    background: linear-gradient(90deg, #218838, #28a745);
+    /* background: linear-gradient(90deg, #218838, #28a745); */
+    background: linear-gradient(90deg, #357abd, #4a90e2);
     transform: scale(1.05);
 }
 
@@ -226,28 +224,14 @@ tr:hover {
         font-size: 0.9rem;
     }
 
-
     label {
-       
         margin-right: 260px;
     }
-
-
 }
-
-
 
 .error-message {
-    color: red; /* Set the text color to red */
-    font-weight: bold; /* Make the text bold */
+    color: red;
+    font-weight: bold;
 }
-
-
-
-
-
-
-
-
 
 

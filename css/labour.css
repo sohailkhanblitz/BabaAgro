@@ -43,6 +43,7 @@ label {
     /* font-weight: bold; */
     margin-bottom: 0.2rem;
     align-self: flex-start;
+    float: left;
 
     /* margin-left: 20px; */
 
