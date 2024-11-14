@@ -49,10 +49,10 @@ $conn->close();
             <?php if (isset($error)) { echo "<p style='color: red;'>$error</p>"; } ?>
 
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required><br><br>
+            <input type="text" id="username" name="username" placeholder="Enter Username" required><br><br>
 
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br><br>
+            <input type="password" id="password" name="password"  placeholder="Enter Password" required><br><br>
 
             <button type="submit" name="login">Submit</button>
 
