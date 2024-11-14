@@ -103,7 +103,7 @@ $conn->close();
         </select>
         <br><br>
         <label for="mobile">Mobile:</label>
-        <input type="text" id="mobile" name="mobile" placeholder="Enter Mobile Number">
+        <input type="text" id="mobile" name="mobile" maxlength="10" pattern="\d{10} placeholder="Enter Mobile Number">
         <br><br>
         <button class="info-btn" onclick="searchUser()">Search User</button>
     </div>

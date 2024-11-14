@@ -114,7 +114,7 @@ $conn->close();
                 <div class="table-container">
                     <table>
                         <tr>
-                            <th>Expense ID</th>
+                            <th>Expense Header</th>
                             <th>Expense Amount</th>
                             <th>Expense Date</th>
                             <th>Description</th>
@@ -122,7 +122,7 @@ $conn->close();
                         </tr>
                         <?php foreach ($transactions as $transaction) { ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($transaction['exid']); ?></td>
+                                <td><?php echo htmlspecialchars($transaction['expense_header']); ?></td>
                                 <td><?php echo htmlspecialchars($transaction['expense_amount']); ?></td>
                                 <td><?php echo htmlspecialchars($transaction['createddate']); ?></td>
                                 <td><?php echo htmlspecialchars($transaction['expense_header']); ?></td>
