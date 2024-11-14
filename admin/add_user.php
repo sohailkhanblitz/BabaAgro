@@ -72,25 +72,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form action="" method="post">
             <h2>Add New User</h2>
 
-            <label for="fname">First Name:</label>
+            <label for="fname">First Name: <span class="required">*</span></label>
             <input type="text" id="fname" name="fname" required>
 
-            <label for="lname">Last Name:</label>
+            <label for="lname">Last Name: <span class="required">*</span></label>
             <input type="text" id="lname" name="lname" required>
 
-            <label for="number">Enter Mobile:</label>
+            <label for="number">Enter Mobile: <span class="required">*</span></label>
             <input type="text" id="number" name="number" maxlength="10" pattern="\d{10}" required>
 
             <label for="email">Enter Email:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" >
 
             <!-- <label for="user">User Role:</label>
             <input type="text" id="user" name="user" required> -->
 
 
-            <label for="user">User Role:</label>
+            <label for="user">User Role: <span class="required">*</span></label>
             <select name="user" required >
-                <option selected disabled>Select Role</option>
+                <option value="" selected disabled>Select Role</option>
                 <option value="Employee">Employee</option>
                 <option value="Contractor">Contractor</option>
             </select>

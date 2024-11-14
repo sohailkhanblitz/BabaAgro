@@ -142,19 +142,19 @@ $conn->close();
                 <?php echo $userOptions; ?>
             </select>
 
-            <label for="product">Product:</label>
+            <label for="product">Product:<span class="required">*</span></label>
             <input type="text" id="product" name="product" required>
 
-            <label for="site">Site:</label>
+            <label for="site">Site:<span class="required">*</span></label>
             <input type="text" id="site" name="site" list="siteList" required>
             <datalist id="siteList">
                 <?php echo $siteOptions; ?>
             </datalist>
 
-            <label for="amount">Amount:</label>
+            <label for="amount">Amount:<span class="required">*</span></label>
             <input type="number" id="amount" name="amount" required>
 
-            <label for="date">Date:</label>
+            <label for="date">Date:<span class="required">*</span></label>
             <input type="date" id="date" name="date" required>
 
             <label for="status">Status:</label>
