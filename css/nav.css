@@ -59,13 +59,6 @@ body {
     text-align: center;
 }
 
-/* Dashboard Header */
-.dashboard header h1 {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 1rem;
-}
-
 /* Form Styling */
 .form-container {
     margin-bottom: 20px;
@@ -87,7 +80,8 @@ body {
     max-width: 100px;
 }
 
-.form-container select, .form-container input[type="text"] {
+.form-container select,
+.form-container input[type="text"] {
     padding: 10px;
     width: 100%;
     max-width: 400px;
@@ -97,36 +91,40 @@ body {
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.form-container select:focus, .form-container input[type="text"]:focus {
+.form-container select:focus,
+.form-container input[type="text"]:focus {
     border-color: #4a90e2;
     box-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
     outline: none;
 }
 
-button[type="submit"] {
-    background: linear-gradient(90deg, #4a90e2, #357abd);
+button.info-btn {
+    background: linear-gradient(90deg, #357abd, #4a90e2);
     color: #fff;
-    padding: 12px 24px;
+    padding: 8px 16px;
     border: none;
     border-radius: 5px;
+    font-size: 0.9rem;
     cursor: pointer;
     font-weight: bold;
     transition: background 0.3s, transform 0.2s;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-button[type="submit"]:hover {
+button.info-btn:hover {
     background: linear-gradient(90deg, #357abd, #4a90e2);
     transform: scale(1.05);
 }
 
 /* User Information Section */
-.user-info, .transaction-info {
+.user-info,
+.transaction-info {
     margin-top: 25px;
     text-align: left;
 }
 
-.user-info h2, .transaction-info h2 {
+.user-info h2,
+.transaction-info h2 {
     font-size: 1.5rem;
     color: #333;
     margin-bottom: 15px;
@@ -147,7 +145,8 @@ table {
     overflow: hidden;
 }
 
-th, td {
+th,
+td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #e0e0e0;
@@ -171,27 +170,6 @@ tr:hover {
     background-color: #eaf0f7;
 }
 
-/* Info Button Styling */
-.info-btn {
-    /* background: linear-gradient(90deg, #28a745, #218838); */
-    background: linear-gradient(90deg, #357abd, #4a90e2);
-    color: #fff;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.3s, transform 0.2s;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.info-btn:hover {
-    /* background: linear-gradient(90deg, #218838, #28a745); */
-    background: linear-gradient(90deg, #357abd, #4a90e2);
-    transform: scale(1.05);
-}
-
 /* Dropdown Styling */
 .status-form select {
     padding: 6px 12px;
@@ -207,31 +185,36 @@ tr:hover {
     outline: none;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        padding: 20px;
-        margin-top: 60px;
-    }
-
-    .navbar a {
-        padding: 8px 15px;
-        font-size: 0.9rem;
-    }
-
-    button[type="submit"], .info-btn {
-        padding: 10px 20px;
-        font-size: 0.9rem;
-    }
-
-    label {
-        margin-right: 260px;
-    }
-}
-
+/* Error Message Styling */
 .error-message {
     color: red;
     font-weight: bold;
 }
 
 
+
+/* Style for the "Details" button link */
+td a {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #4a90e2;/* Green background */
+    color: white; /* White text */
+    text-align: center;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for the button */
+td a:hover {
+    background: linear-gradient(90deg, #357abd, #4a90e2); /* Darker green when hovered */
+    cursor: pointer;
+}
+
+/* Optional: Add focus styling for accessibility */
+td a:focus {
+    outline: 2px solid #333;
+    outline-offset: 2px;
+}

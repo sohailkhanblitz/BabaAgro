@@ -274,3 +274,9 @@ select[name="user"] option {
     background-color: #ffffff;
     color: #333;
 }
+
+.required {
+    color: red;
+    font-weight: bold;
+  }
+  
