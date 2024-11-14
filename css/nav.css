@@ -16,6 +16,7 @@ body {
     padding: 20px;
     font-family: 'Arial', sans-serif;
     color: #333;
+    overflow: auto;
 }
 
 /* Navbar Styling */
@@ -121,6 +122,7 @@ button.info-btn:hover {
 .transaction-info {
     margin-top: 25px;
     text-align: left;
+    overflow-x: auto;
 }
 
 .user-info h2,

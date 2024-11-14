@@ -147,7 +147,7 @@ function executeSearch(adduser, mobile) {
             document.getElementById('transaction-info').innerHTML = '';
         } else {
             let userInfo = `
-                <h2>User Information</h2>
+                <h2 >User Information</h2>
                 <table border="1" cellpadding="10" cellspacing="0">
                     <tr>
                         <th>User ID</th>
