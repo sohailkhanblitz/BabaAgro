@@ -16,7 +16,7 @@ if (isset($_GET['mobile'])) {
     $stmt = $conn->prepare("SELECT r.userid, r.firstname, r.lastname, r.email, r.userrole, a.site, a.product, a.status
                             FROM registereduser r
                             LEFT JOIN allowancemaster a ON r.userid = a.userid
-                            WHERE r.mobile = ? ORDER BY a.status = 'active' DESC");
+                            WHERE r.mobile = ? ORDER BY a.status = 'Active' DESC");
     $stmt->bind_param("s", $mobile);
     $stmt->execute();
     $stmt->store_result();
