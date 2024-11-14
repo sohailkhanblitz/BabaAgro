@@ -13,6 +13,21 @@ $user_stmt->bind_result($adminid);
 $user_stmt->fetch();
 $user_stmt->close();
 
+// Check if this is an AJAX request to check active status
+if (isset($_GET['userid'])) {
+    $userid = intval($_GET['userid']);
+    $stmt = $conn->prepare("SELECT COUNT(*) as activeCount FROM allowancemaster WHERE userid = ? AND status = 'Active'");
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $stmt->bind_result($activeCount);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Return JSON response for AJAX request
+    echo json_encode(['hasActiveSite' => $activeCount > 0]);
+    exit; // Stop further script execution for AJAX request
+}
+
 // Initialize variables to hold user and site options
 $userOptions = "";
 $siteOptions = "";
@@ -36,6 +51,33 @@ if ($site_result->num_rows > 0) {
         $siteOptions .= "<option value='" . $site_row['site'] . "'>";
     }
 }
+
+// JavaScript to update the status dropdown and display the message
+$script = "
+<script>
+    function checkActiveStatus(userId) {
+        if (!userId) return;
+
+        // AJAX call to check if the selected user has an active site
+        fetch('?userid=' + userId)
+            .then(response => response.json())
+            .then(data => {
+                const statusDropdown = document.getElementById('status');
+                const activeOption = document.getElementById('activeOption');
+                const activeMessage = document.getElementById('activeMessage');
+
+                if (data.hasActiveSite) {
+                    activeOption.disabled = true;
+                    statusDropdown.value = 'To be Active';
+                    activeMessage.style.display = 'block';
+                } else {
+                    activeOption.disabled = false;
+                    activeMessage.style.display = 'none';
+                }
+            });
+    }
+</script>
+";
 
 // Check if the form is submitted
 $message = "";
@@ -71,6 +113,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Allowance</title>
     <link rel="stylesheet" href="../css/allowance.css">
+    <?php echo $script; ?>
 </head>
 <body>
 
@@ -89,13 +132,12 @@ $conn->close();
         </div>
     </div>
 
-
     <div class="container">
         <form action="" method="post">
             <h2>Add Allowance</h2>
 
             <label for="userid">Select User:</label>
-            <select name="userid" required>
+            <select name="userid" onchange="checkActiveStatus(this.value)" required>
                 <option selected disabled>Select User</option>
                 <?php echo $userOptions; ?>
             </select>
@@ -116,11 +158,11 @@ $conn->close();
             <input type="date" id="date" name="date" required>
 
             <label for="status">Status:</label>
-            <select name="status" required>
-                <option value="active">Active</option>
-                <option value="Settled">Settled</option>
-                <option value="Push For Settlement">Push For Settlement</option>
+            <select name="status" id="status" required>
+                <option value="Active" id="activeOption">Active</option>
+                <option value="To be Active">To be Active</option>
             </select>
+            <p id="activeMessage" style="display: none; color: red; font-size: 0.9em;">User is already assigned to an active site.</p>
 
             <button class="addallow" type="submit">Submit</button>
         </form>
