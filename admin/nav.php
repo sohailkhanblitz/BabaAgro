@@ -110,6 +110,7 @@ $conn->close();
 
     <!-- Display User Information -->
     <div class="user-info" id="user-info">
+       
         <!-- User information will be displayed here -->
     </div>
 
@@ -117,7 +118,7 @@ $conn->close();
     <div class="transaction-info" id="transaction-info">
         <!-- Transaction information will be displayed here -->
     </div>
-</div>
+</div>s
 
 <script>
 
@@ -156,7 +157,7 @@ function executeSearch(adduser, mobile) {
             document.getElementById('transaction-info').innerHTML = '';
         } else {
             let userInfo = `
-                <h2>User Information</h2>
+                <h2 >User Information</h2>
                 <table border="1" cellpadding="10" cellspacing="0">
                     <tr>
                         <th>User ID</th>
