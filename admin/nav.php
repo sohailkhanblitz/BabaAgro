@@ -66,14 +66,30 @@ $conn->close();
 </head>
 <body>
 
-<div class="navbar">
+<!-- <div class="navbar">
     <a href="nav.php">Home</a>
     <a href="add_user.php">Add User</a>
     <a href="allowances.php">Add Allowance</a>
-</div>
+</div> -->
+
+<div class="navbar">
+        <div>
+
+            <a href="nav.php">Home</a>
+        </div>
+        <div>
+
+            <a href="add_user.php">Add User</a>
+        </div>
+        <div>
+
+            <a href="allowances.php">Add Allowance</a>
+        </div>
+    </div>
+
 
 <div class="container">
-    <h1>Dashboard</h1>
+    <!-- <h1>Dashboard</h1> -->
     
     <!-- Search Form -->
     <div class="form-container">
@@ -89,7 +105,7 @@ $conn->close();
         <label for="mobile">Mobile:</label>
         <input type="text" id="mobile" name="mobile" placeholder="Enter Mobile Number">
         <br><br>
-        <button onclick="searchUser()">Search User</button>
+        <button class="info-btn" onclick="searchUser()">Search User</button>
     </div>
 
     <!-- Display User Information -->

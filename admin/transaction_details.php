@@ -74,9 +74,9 @@ $conn->close();
 
     <div class="container">
 
-       <div class="btn">
+       <!-- <div class="btn">
            <a href="nav.php"><button class="bbtn">Back</button></a>       
-       </div>
+       </div> -->
 
         <?php if (isset($site) && isset($product) && isset($userid)) { ?>
         <p class="site-product-info">
