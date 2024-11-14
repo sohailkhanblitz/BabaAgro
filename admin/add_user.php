@@ -1,5 +1,4 @@
 <?php
-// Start a session if necessary (only if using session for user authentication)
 session_start();
 include 'db_connection.php'; // Ensure this file contains your database connection code
 
@@ -12,8 +11,10 @@ $user_stmt->bind_result($adminid);
 $user_stmt->fetch();
 $user_stmt->close();
 
-
 $message = ""; // Initialize the message variable
+$duplicate_mobile = "";
+$duplicate_email = "";
+$duplicate_name = "";
 
 // Check if the form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -26,18 +27,58 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $createdby = $adminid;
     $updatedby = $adminid;
 
-    // Prepare and execute the insert query
-    $stmt = $conn->prepare("INSERT INTO registereduser (firstname, lastname, mobile, email, userrole, createdby, updatedby) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssss", $fname, $lname, $mobile, $email, $user_role, $createdby, $updatedby);
+    // Check for duplicate mobile number
+    $stmt_check_mobile = $conn->prepare("SELECT 1 FROM registereduser WHERE mobile = ?");
+    $stmt_check_mobile->bind_param("s", $mobile);
+    $stmt_check_mobile->execute();
+    $stmt_check_mobile->store_result();
 
-    if ($stmt->execute()) {
-        $message = "<p class='success-message'>User added successfully!</p>"; // Set success message
-    } else {
-        $message = "<p class='error-message'>Error: " . $stmt->error . "</p>"; // Set error message
+    // Check for duplicate email
+    $stmt_check_email = $conn->prepare("SELECT 1 FROM registereduser WHERE email = ?");
+    $stmt_check_email->bind_param("s", $email);
+    $stmt_check_email->execute();
+    $stmt_check_email->store_result();
+
+    // Check for duplicate first name and last name combination
+    $stmt_check_name = $conn->prepare("SELECT 1 FROM registereduser WHERE firstname = ? AND lastname = ?");
+    $stmt_check_name->bind_param("ss", $fname, $lname);
+    $stmt_check_name->execute();
+    $stmt_check_name->store_result();
+
+    if ($stmt_check_mobile->num_rows > 0) {
+        $duplicate_mobile = " - Duplicate mobile number!";
     }
 
-    // Close the statement and connection
-    $stmt->close();
+    if ($stmt_check_email->num_rows > 0) {
+        $duplicate_email = " - Duplicate email!";
+    }
+
+    if ($stmt_check_name->num_rows > 0) {
+        $duplicate_name = " - Duplicate name!";
+    }
+
+    // Only proceed with insertion if no duplicates were found
+    if ($stmt_check_mobile->num_rows == 0 && $stmt_check_email->num_rows == 0 && $stmt_check_name->num_rows == 0) {
+        // Prepare and execute the insert query
+        $stmt = $conn->prepare("INSERT INTO registereduser (firstname, lastname, mobile, email, userrole, createdby, updatedby) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssss", $fname, $lname, $mobile, $email, $user_role, $createdby, $updatedby);
+
+        if ($stmt->execute()) {
+            $message = "<p class='success-message'>User added successfully!</p>"; // Set success message
+        } else {
+            $message = "<p class='error-message'>Error: " . $stmt->error . "</p>"; // Set error message
+        }
+
+        // Close the statement
+        $stmt->close();
+    } else {
+        $message = "<p class='error-message'>Please fix the duplicate entries before submitting.</p>";
+    }
+
+    // Close the statement for duplicate checks
+    $stmt_check_mobile->close();
+    $stmt_check_email->close();
+    $stmt_check_name->close();
     $conn->close();
 }
 ?>
@@ -67,44 +108,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-
     <div class="container">
         <form action="" method="post">
             <h2>Add New User</h2>
 
             <label for="fname">First Name: <span class="required">*</span></label>
             <input type="text" id="fname" name="fname" required>
+            <span class="error-message"><?php echo $duplicate_name; ?></span>
 
             <label for="lname">Last Name: <span class="required">*</span></label>
             <input type="text" id="lname" name="lname" required>
+            <span class="error-message"><?php echo $duplicate_name; ?></span>
 
             <label for="number">Enter Mobile: <span class="required">*</span></label>
             <input type="text" id="number" name="number" maxlength="10" pattern="\d{10}" required>
+            <span class="error-message"><?php echo $duplicate_mobile; ?></span>
 
             <label for="email">Enter Email:</label>
             <input type="email" id="email" name="email" >
-
-            <!-- <label for="user">User Role:</label>
-            <input type="text" id="user" name="user" required> -->
-
+            <span class="error-message"><?php echo $duplicate_email; ?></span>
 
             <label for="user">User Role: <span class="required">*</span></label>
-            <select name="user" required >
+            <select name="user" required>
                 <option value="" selected disabled>Select Role</option>
                 <option value="Employee">Employee</option>
                 <option value="Contractor">Contractor</option>
             </select>
-
-
-
 
             <button class="adduser" type="submit">Add User</button>
         </form>
         <?php echo $message; ?>
 
     </div>
-
-        <!-- Display the message below the form -->
 
 </body>
 </html>

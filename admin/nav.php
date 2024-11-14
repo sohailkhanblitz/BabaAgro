@@ -53,6 +53,26 @@ if (isset($_POST['action']) && $_POST['action'] == 'search_user') {
     exit;
 }
 
+if (isset($_POST['action']) && $_POST['action'] == 'update_status') {
+    $status = $_POST['status'] ?? '';
+    $product = $_POST['product'] ?? '';
+    $site = $_POST['site'] ?? '';
+    $userid = $_POST['userid'] ?? '';
+
+    if ($status && $product && $site && $userid) {
+        // Update the status in the allowancemaster table
+        $update_stmt = $conn->prepare("UPDATE allowancemaster SET status = ? WHERE product = ? AND site = ? AND userid = ?");
+        $update_stmt->bind_param("ssss", $status, $product, $site, $userid);
+        $update_stmt->execute();
+        $update_stmt->close();
+        
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false]);
+    }
+    exit;
+}
+
 $conn->close();
 ?>
 
@@ -66,32 +86,13 @@ $conn->close();
 </head>
 <body>
 
-<!-- <div class="navbar">
-    <a href="nav.php">Home</a>
-    <a href="add_user.php">Add User</a>
-    <a href="allowances.php">Add Allowance</a>
-</div> -->
-
 <div class="navbar">
-        <div>
-
-            <a href="nav.php">Home</a>
-        </div>
-        <div>
-
-            <a href="add_user.php">Add User</a>
-        </div>
-        <div>
-
-            <a href="allowances.php">Add Allowance</a>
-        </div>
-    </div>
-
+    <div><a href="nav.php">Home</a></div>
+    <div><a href="add_user.php">Add User</a></div>
+    <div><a href="allowances.php">Add Allowance</a></div>
+</div>
 
 <div class="container">
-    <!-- <h1>Dashboard</h1> -->
-    
-    <!-- Search Form -->
     <div class="form-container">
         <h2>Search User</h2>
         <label for="adduser">User Name:</label>
@@ -103,24 +104,16 @@ $conn->close();
         </select>
         <br><br>
         <label for="mobile">Mobile:</label>
-        <input type="text" id="mobile" name="mobile" maxlength="10" pattern="\d{10} placeholder="Enter Mobile Number">
+        <input type="text" id="mobile" name="mobile" maxlength="10" pattern="\d{10}" placeholder="Enter Mobile Number">
         <br><br>
         <button class="info-btn" onclick="searchUser()">Search User</button>
     </div>
 
-    <!-- Display User Information -->
-    <div class="user-info" id="user-info">
-        <!-- User information will be displayed here -->
-    </div>
-
-    <!-- Display Transaction Information -->
-    <div class="transaction-info" id="transaction-info">
-        <!-- Transaction information will be displayed here -->
-    </div>
+    <div class="user-info" id="user-info"></div>
+    <div class="transaction-info" id="transaction-info"></div>
 </div>
 
 <script>
-
 function searchUser() {
     const adduser = document.getElementById('adduser').value;
     const mobile = document.getElementById('mobile').value;
@@ -140,9 +133,7 @@ function searchUser() {
 function executeSearch(adduser, mobile) {
     fetch('', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
             action: 'search_user',
             adduser: adduser,
@@ -187,6 +178,7 @@ function executeSearch(adduser, mobile) {
                         <th>Allowance</th>
                         <th>Total Expense</th>
                         <th>Status</th>
+                        <th>Change Status</th>
                         <th>Info</th>
                     </tr>`;
             data.forEach(transaction => {
@@ -198,12 +190,52 @@ function executeSearch(adduser, mobile) {
                         <td>${transaction.amount}</td>
                         <td>${transaction.total_expense}</td>
                         <td>${transaction.status}</td>
+                        <td>
+                            <select class="status-select" data-product="${transaction.product}" data-site="${transaction.site}" data-userid="${transaction.userid}">
+                                <option value="Active" ${transaction.status === 'Active' ? 'selected' : ''}>Active</option>
+                                <option value="Settled" ${transaction.status === 'Settled' ? 'selected' : ''}>Settled</option>
+                            </select>
+                        </td>
                         <td><a href="transaction_details.php?product=${encodeURIComponent(transaction.product)}&site=${encodeURIComponent(transaction.site)}&userid=${encodeURIComponent(transaction.userid)}">Details</a></td>
-
                     </tr>`;
             });
             transactionInfo += '</table>';
             document.getElementById('transaction-info').innerHTML = transactionInfo;
+
+            // Add event listeners for status change
+            document.querySelectorAll('.status-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    updateStatus(select);
+                });
+            });
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function updateStatus(select) {
+    const status = select.value;
+    const product = select.getAttribute('data-product');
+    const site = select.getAttribute('data-site');
+    const userid = select.getAttribute('data-userid');
+
+    fetch('', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            action: 'update_status',
+            status: status,
+            product: product,
+            site: site,
+            userid: userid
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Status updated successfully!');
+        } else {
+            alert('Failed to update status!');
         }
     })
     .catch(error => console.error('Error:', error));
@@ -214,8 +246,6 @@ window.onload = function() {
     const storedMobile = sessionStorage.getItem('mobile');
 
     if (storedUsername || storedMobile) {
-        // document.getElementById('adduser').value = storedUsername || '';
-        // document.getElementById('mobile').value = storedMobile || '';
         executeSearch(storedUsername, storedMobile);
     }
 };
