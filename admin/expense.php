@@ -176,11 +176,11 @@ $conn->close();
         </div>
         <header>
             <h1>Site: <?php echo htmlspecialchars($site); ?> Product: <?php echo htmlspecialchars($product); ?></h1>
-            <button id="addExpenseButton" class="add-expense-button" <?php echo $status !== 'active' ? 'disabled' : ''; ?>>Add New Expense</button>
+            <button id="addExpenseButton" class="add-expense-button" <?php echo $status !== 'Active' ? 'disabled' : ''; ?>>Add New Expense</button>
             <form method="POST" action="" style="display:inline;" onsubmit="return confirmMarkAsDone()">
     <input type="hidden" name="site" value="<?php echo htmlspecialchars($site); ?>">
     <input type="hidden" name="product" value="<?php echo htmlspecialchars($product); ?>">
-    <button type="submit" name="action" value="update_status" class="update-status-button" <?php echo $status !== 'active' ? 'disabled' : ''; ?>>Push For  Settlement</button>
+    <button type="submit" name="action" value="update_status" class="update-status-button" <?php echo $status !== 'Active' ? 'disabled' : ''; ?>>Push For  Settlement</button>
 </form>
 
         </header>
