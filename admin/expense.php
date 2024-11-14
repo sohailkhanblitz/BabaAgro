@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $product = $_POST['product'];
 
         // Update the allowancemaster table to change status to 'done'
-        $stmt = $conn->prepare("UPDATE allowancemaster SET status = 'Pushed For Approval' WHERE site = ? AND product = ?");
+        $stmt = $conn->prepare("UPDATE allowancemaster SET status = 'Pushed For Settlement' WHERE site = ? AND product = ?");
         $stmt->bind_param("ss", $site, $product);
 
         if ($stmt->execute()) {
