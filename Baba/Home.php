@@ -127,7 +127,6 @@ function executeSearch(adduser, mobile) {
                 <h2>User Information</h2>
                 <table border="1" cellpadding="10" cellspacing="0">
                     <tr>
-                        <th>User ID</th>
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Mobile</th>
@@ -138,7 +137,6 @@ function executeSearch(adduser, mobile) {
             data.forEach(user => {
                 userInfo += `
                     <tr onclick="redirectToTransaction(${user.user_id}, '${user.first_name}', '${user.last_name}', '${user.mobile}', '${user.email}', '${user.user_role}')">
-                        <td>${user.user_id}</td>
                         <td>${user.first_name}</td>
                         <td>${user.last_name}</td>
                         <td>${user.mobile}</td>
