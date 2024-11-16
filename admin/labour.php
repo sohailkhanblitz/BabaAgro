@@ -3,6 +3,8 @@ session_start();
 include 'db_connection.php';
 
 $showDetails = false; // Variable to control visibility of additional details
+$hideSearch = false; // Variable to hide search field, button, and admin login link
+$userNotFound = false; // Variable to display "User not found" message
 
 // Handle site and product filtering
 $sites = [];
@@ -34,6 +36,9 @@ if (isset($_GET['mobile'])) {
         $_SESSION['userDetails'] = $results;
         $_SESSION['allData'] = $results; // Store all user data for filtering
         $showDetails = true; // Show additional details since search was successful
+        $hideSearch = true; // Hide search field, button, and admin link since search was successful
+    } else {
+        $userNotFound = true; // Display "User not found" message
     }
 }
 ?>
@@ -50,16 +55,35 @@ if (isset($_GET['mobile'])) {
             const mobile = document.getElementById('mobile').value;
             window.location.href = "?mobile=" + mobile;
         }
+
+        function hideUserNotFoundMessage() {
+            const userNotFoundMessage = document.getElementById('userNotFoundMessage');
+            if (userNotFoundMessage) {
+                setTimeout(() => {
+                    userNotFoundMessage.style.display = 'none';
+                }, 2000); // Hide message after 5 seconds
+            }
+        }
     </script>
 </head>
-<body>
+<body onload="hideUserNotFoundMessage()">
     <div class="container">
-        <h2>User Login</h2>
+        <h2><?php echo $showDetails ? "User Information" : "User Login"; ?></h2>
 
-        <!-- Mobile Number Input and Search Button -->
-        <label for="mobile">Mobile Number:</label>
-        <input type="text" id="mobile" required placeholder="Enter your mobile number">
-        <button type="submit" onclick="searchUser()">Search</button>
+        <!-- Mobile Number Input, Search Button, and Admin Login Link -->
+        <?php if (!$hideSearch): ?>
+            <label for="mobile">Mobile Number:</label>
+            <input type="text" id="mobile" required placeholder="Enter your mobile number">
+            <button type="submit" onclick="searchUser()">Search</button>
+            
+            <!-- Display 'User not found' message if search yields no results -->
+            <?php if ($userNotFound): ?>
+                <p id="userNotFoundMessage" style="color: red;">User not found. Please try again.</p>
+            <?php endif; ?>
+
+            <!-- Admin Login Link -->
+            <a href="admin.php" id="adminLogin">Admin Login</a>
+        <?php endif; ?>
 
         <?php if ($showDetails && isset($_SESSION['userDetails']) && !empty($_SESSION['userDetails'])): ?>
         <!-- Additional Details -->

@@ -107,7 +107,7 @@ $conn->close();
         </div>
         <!-- Transaction Info -->
         <div class="transaction-info">
-            <h2>Transaction History</h2>
+            <h2>Expense History</h2>
             <?php if (empty($transactions)) { ?>
                 <div class="info"><p>No transactions found for this site and product.</p></div>
             <?php } else { ?>
@@ -117,7 +117,6 @@ $conn->close();
                             <th>Expense Header</th>
                             <th>Expense Amount</th>
                             <th>Expense Date</th>
-                            <th>Description</th>
                             <th>Uploaded File</th> <!-- New Column for Uploaded File -->
                         </tr>
                         <?php foreach ($transactions as $transaction) { ?>
@@ -125,7 +124,6 @@ $conn->close();
                                 <td><?php echo htmlspecialchars($transaction['expense_header']); ?></td>
                                 <td><?php echo htmlspecialchars($transaction['expense_amount']); ?></td>
                                 <td><?php echo htmlspecialchars($transaction['createddate']); ?></td>
-                                <td><?php echo htmlspecialchars($transaction['expense_header']); ?></td>
                                 <td>
                                     <?php 
                                     if ($transaction['file_path']) {
