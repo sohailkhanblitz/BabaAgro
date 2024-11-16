@@ -109,7 +109,7 @@ $conn->close();
         <div class="transaction-info">
             <h2>Transaction History</h2>
             <?php if (empty($transactions)) { ?>
-                <p>No transactions found for this site and product.</p>
+                <div class="info"><p>No transactions found for this site and product.</p></div>
             <?php } else { ?>
                 <div class="table-container">
                     <table>

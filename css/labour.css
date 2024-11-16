@@ -129,7 +129,7 @@ table {
 table, th, td {
     border: 1px solid #ddd;
     padding: 0.5rem;
-    text-align: left;
+    text-align: center;
 }
 
 th {
@@ -145,6 +145,7 @@ td a {
     color: #4a90e2;
     text-decoration: none;
     transition: color 0.3s ease;
+    text-align: center;
 }
 
 td a:hover {

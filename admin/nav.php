@@ -88,6 +88,7 @@ $conn->close();
 
 <div class="navbar">
     <div><a href="nav.php">Home</a></div>
+    <div><a href="site.php">Site</a></div>
     <div><a href="add_user.php">Add User</a></div>
     <div><a href="allowances.php">Add Allowance</a></div>
 </div>

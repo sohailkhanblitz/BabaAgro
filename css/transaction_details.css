@@ -61,7 +61,7 @@ body {
 
 /* Header Styling */
  p {
-    font-size: 2rem;
+    font-size: 1rem;
     color: #333;
     margin-bottom: 1rem;
     display: flex;
@@ -72,6 +72,7 @@ body {
 .user-info {
     margin-top: 25px;
     text-align: left;
+    overflow: auto;
 }
 
 .user-info h2 {
@@ -93,6 +94,7 @@ body {
     padding: 12px 15px;
     text-align: left;
     border: 1px solid #e0e0e0; /* Added border for row and column lines */
+    text-align: center;
 }
 
 .user-info th {
@@ -129,6 +131,7 @@ body {
     overflow-x: auto;
     border-radius: 8px;
     margin-top: 20px;
+    
 }
 
 .transaction-info table {
@@ -140,8 +143,8 @@ body {
 }
 
 .transaction-info th, .transaction-info td {
-    padding: 12px 15px;
-    text-align: left;
+    padding: 10px;
+    text-align: center;
     border: 1px solid #e0e0e0; /* Added border for row and column lines */
 }
 
@@ -242,6 +245,12 @@ body {
     text-align: right;
 }
 
-
+.info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%; /* Adjust this as needed */
+}
 
 

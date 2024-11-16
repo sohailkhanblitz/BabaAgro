@@ -1,6 +1,6 @@
 /* Navbar Styling */
 .navbar {
-    width: 106%;
+    width: 100%;
     background-color: #333;
     display: flex;
     justify-content: center;
@@ -9,6 +9,8 @@
     position: fixed;
     top: 0;
     z-index: 1000;
+    padding: 6px;
+    white-space: nowrap;
 }
 
 .navbar a {
@@ -21,6 +23,7 @@
     margin: 0 10px;
     border-radius: 4px;
     font-size: 16px
+
 
     
 
@@ -35,11 +38,12 @@
 .container {
     width: 100%;
     max-width: 900px;
-    padding: 40px;
+    padding: 20px 40px 20px 40px; 
+    /* padding: 40px; */
     background: #fff;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
-    margin-top: 80px;
+    margin-top: 60px;
     text-align: center;
 }
 
@@ -67,7 +71,7 @@ body {
 .container {
     width: 100%;
     max-width: 400px;
-    padding: 2rem;
+    padding: 1.5rem;
     background: #ffffff;
     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
     border-radius: 8px;
@@ -90,7 +94,7 @@ body {
 h2 {
     color: #333;
     font-size: 1.8rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
 }
 
 form {
@@ -102,18 +106,24 @@ label {
     font-size: 0.9rem;
     color: #555;
     text-align: left;
-    margin-top: 1rem;
+    margin-top: 0.8rem;
 }
 
 input[type="text"],
 input[type="number"],
 input[type="email"] {
     width: 100%;
-    padding: 0.8rem;
-    margin-top: 0.5rem;
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+    margin-bottom: 0.8rem;
     border-radius: 5px;
     border: 1px solid #ddd;
     transition: border-color 0.3s ease;
+    box-sizing: border-box;
+
+
+     
+    
 
 
     
@@ -130,7 +140,7 @@ input[type="email"]:focus {
 button[type="submit"] {
     background: linear-gradient(90deg, #4a90e2, #357abd);
     margin-top: 1.5rem;
-    padding: 0.8rem;
+    padding: 0.7rem;
     width: 100%;
     font-size: 1rem;
     border: none;
@@ -172,7 +182,7 @@ a:hover {
 
 p {
     margin-top: 1rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: green ;
 }
 
@@ -194,12 +204,12 @@ input[type="number"]::-webkit-outer-spin-button {
 @media (max-width: 768px) {
     .container {
         max-width: 90%;
-        padding: 1.5rem;
+        padding: 1.2rem;
         margin-top: 100px; /* Adjust for fixed navbar */
     }
 
     h2 {
-        font-size: 1.6rem;
+        font-size: 0.8rem;
     }
 
     input[type="text"],
@@ -240,7 +250,7 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     button[type="submit"] {
-        padding: 0.9rem;
+        padding: 0.7rem;
         font-size: 1rem;
     }
 
@@ -251,14 +261,19 @@ input[type="number"]::-webkit-outer-spin-button {
 
 select[name="user"] {
     width: 100%;
-    padding: 0.8rem;
-    margin-top: 0.5rem;
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+    margin-bottom: 0.8rem;
     border-radius: 5px;
     border: 1px solid #ddd;
     background-color: #f9f9f9;
     font-size: 1rem;
     color: #333;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+
+
+    
 }
 
 /* On Focus */

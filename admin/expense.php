@@ -186,9 +186,9 @@ $conn->close();
         </header>
         <div>
         <div class="totals">
-    <p>Total Allowance: <?php echo htmlspecialchars(number_format($allowanceAmount, 2)); ?></p>
-    <p>Total Expenses: <?php echo htmlspecialchars(number_format($totalExpenses, 2)); ?></p>
-    <p>Remaining Balance: <?php echo htmlspecialchars(number_format($remainingBalance, 2)); ?></p>
+    <div class="left"><p>Total Allowance: <?php echo htmlspecialchars(number_format($allowanceAmount, 2)); ?></p></div>
+    <div class="center"><p>Total Expenses: <?php echo htmlspecialchars(number_format($totalExpenses, 2)); ?></p></div>
+   <div class="right"><p>Remaining Balance: <?php echo htmlspecialchars(number_format($remainingBalance, 2)); ?></p></div> 
 </div>
 
         </div>

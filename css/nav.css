@@ -25,22 +25,28 @@ body {
     background-color: #333;
     display: flex;
     justify-content: center;
-    padding: 10px;
+    padding: 16px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
     position: fixed;
     top: 0;
     z-index: 1000;
+    /* min-height:16px; */
+    white-space: nowrap;
 }
 
 .navbar a {
     color: #fff;
     text-align: center;
-    padding: 10px 20px;
+    padding: 10px ;
     text-decoration: none;
     font-weight: bold;
     transition: background 0.3s, color 0.3s;
     border-radius: 4px;
+    margin: 0 10px;
     font-size: 16px;
+
+
+
 }
 
 .navbar a:hover {
@@ -51,7 +57,7 @@ body {
 /* Container Styling */
 .container {
     width: 100%;
-    max-width: 900px;
+    max-width: 800px;
     padding: 40px;
     background: #fff;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
@@ -79,6 +85,7 @@ body {
     text-align: left;
     width: 100%;
     max-width: 100px;
+   
 }
 
 .form-container select,
@@ -122,7 +129,7 @@ button.info-btn:hover {
 .transaction-info {
     margin-top: 25px;
     text-align: left;
-    overflow-x: auto;
+    /* overflow-x: auto; */
 }
 
 .user-info h2,
@@ -149,8 +156,8 @@ table {
 
 th,
 td {
-    padding: 12px 15px;
-    text-align: left;
+    padding: 10px;
+    text-align:center;
     border-bottom: 1px solid #e0e0e0;
 }
 
@@ -217,6 +224,167 @@ td a:hover {
 
 /* Optional: Add focus styling for accessibility */
 td a:focus {
-    outline: 2px solid #333;
+    /* outline: 2px solid #333; */
     outline-offset: 2px;
 }
+
+
+/* Enhanced Dropdown Styling in Table */
+.status-select {
+    width: 100%;
+    max-width: 140px;
+    padding: 8px 12px; /* Added padding for more inner space */
+    font-size: 15px; /* Slightly increased font size for readability */
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9fbfd;
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%234a90e2" class="bi bi-caret-down-fill" viewBox="0 0 16 16"%3E%3Cpath d="M7.247 11.14 2.451 6.14a.5.5 0 0 1 .376-.84h10.346a.5.5 0 0 1 .374.84l-4.796 5a.5.5 0 0 1-.752 0z"/%3E%3C/svg%3E'); /* Custom arrow icon */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Hover and Focus Effects */
+.status-select:hover,
+.status-select:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 8px rgba(74, 144, 226, 0.2);
+    outline: none;
+}
+
+/* Optional: Hide Default Arrow for Cross-Browser Consistency */
+.status-select::-ms-expand {
+    display: none;
+}
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        margin-top: 60px;
+    }
+
+    .navbar a {
+        /* padding: 8px 15px; */
+        font-size: 0.9rem;
+    }
+
+    button[type="submit"], .info-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+
+    label {
+       
+        margin-right: 260px;
+    }
+
+
+}
+
+
+
+
+
+/* Hover and Focus Effects */
+.status-select:hover,
+.status-select:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 8px rgba(74, 144, 226, 0.2);
+    outline: none;
+}
+
+/* Optional: Hide Default Arrow for Cross-Browser Consistency */
+.status-select::-ms-expand {
+    display: none;
+}
+
+
+
+
+
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar {
+        /* flex-direction: column; */
+        align-items: center;
+    }
+
+    .navbar a {
+        /* padding: 8px 0; */
+        width: 100%;
+        text-align: center;
+    }
+
+    .form-container, .user-info, .transaction-info {
+        max-width: 100%;
+    }
+
+    .user-info, .transaction-info {
+        width: 100%;
+        max-width: 600px;
+        overflow-x: auto;
+    }
+
+    .container {
+        padding: 15px;
+        margin-top: 60px;
+    }
+
+    .form-container label {
+        font-size: 0.9rem;
+        /* text-align: center; */
+
+        margin-left: 8px;
+    }
+
+    table, th, td {
+        font-size: 0.85rem;
+        padding: 8px;
+    }
+
+    
+    button.info-btn {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+    }
+}
+
+
+
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+
+    .navbar a {
+        /* font-size: 0.8rem; */
+        font-size: 16px;
+    }
+
+    table, th, td {
+        font-size: 0.75rem;
+    }
+
+    button.info-btn {
+        padding: 8px 16px;
+        font-size: 0.75rem;
+    }
+}
+
+
+
+
+
+
+
+
+ 
+
+
