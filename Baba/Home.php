@@ -1,10 +1,17 @@
 <?php
-// PHP Logic for handling AJAX search and fetching usernames
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
+
 session_start();
+if (!isset($_SESSION['admin_mobile'])) {
+    header("Location: login.php");
+    exit();
+}
+// echo "Welcome to Home Page!". $_SESSION['first_name'];
+
+
 include 'db_connection.php';
 
 // Fetch distinct usernames for the dropdown
@@ -18,28 +25,43 @@ if ($result->num_rows > 0) {
     }
 }
 
+// Handle AJAX requests
 if (isset($_POST['action']) && $_POST['action'] == 'search_user') {
     $username = $_POST['adduser'] ?? '';
     $mobile = $_POST['mobile'] ?? '';
 
-    // Query to search based on both username and mobile
-    $stmt = $conn->prepare("
-        SELECT um.user_id, um.first_name, um.last_name, um.mobile, um.email, um.user_role
-        FROM user_master um
-        WHERE (CONCAT(um.first_name, ' ', um.last_name) = ? OR um.mobile = ?)
-    ");
-    $stmt->bind_param("ss", $username, $mobile);
+    // Build dynamic query based on input
+    $query = "SELECT user_id, first_name, last_name, mobile, email, user_role FROM user_master";
+    $conditions = [];
+    $params = [];
+    $types = "";
+
+    if (!empty($username)) {
+        $conditions[] = "CONCAT(first_name, ' ', last_name) = ?";
+        $params[] = $username;
+        $types .= "s";
+    }
+    if (!empty($mobile)) {
+        $conditions[] = "mobile = ?";
+        $params[] = $mobile;
+        $types .= "s";
+    }
+    if (!empty($conditions)) {
+        $query .= " WHERE " . implode(" AND ", $conditions);
+    }
+
+    $stmt = $conn->prepare($query);
+    if ($params) {
+        $stmt->bind_param($types, ...$params);
+    }
     $stmt->execute();
     $result = $stmt->get_result();
 
     $transaction_info = [];
     if ($result->num_rows > 0) {
-        while ($transaction = $result->fetch_assoc()) {
-            $transaction_info[] = $transaction;
+        while ($row = $result->fetch_assoc()) {
+            $transaction_info[] = $row;
         }
-
-        // Store user data in session
-        $_SESSION['user_data'] = $transaction_info;
     } else {
         $transaction_info = "No user found with the provided details.";
     }
@@ -51,17 +73,16 @@ if (isset($_POST['action']) && $_POST['action'] == 'search_user') {
 
 $conn->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="../Csss/Home.css"></head>
+    <link rel="stylesheet" href="../Csss/Home.css">
+</head>
 <body>
 
-<!-- New Navbar -->
 <nav class="navbar">
     <div class="nav-items">
       <a href="./Home.php">Home</a>
@@ -70,13 +91,16 @@ $conn->close();
       <a href="./Allowance.php">Add Allowance</a>
     </div>
 </nav>
+<?php
+echo "Welcome to Home Page!". $_SESSION['admin_name'];
+?>
 
 <div class="container">
     <div class="form-container">
         <h2>Search User</h2>
         <label for="adduser">User Name:</label>
         <select id="adduser" name="adduser">
-            <option value="">Select User</option>
+            <option value="">All Users</option>
             <?php foreach ($usernames as $name): ?>
                 <option value="<?php echo htmlspecialchars($name); ?>"><?php echo htmlspecialchars($name); ?></option>
             <?php endforeach; ?>
@@ -92,18 +116,30 @@ $conn->close();
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Retrieve the last search from sessionStorage
+    const lastAdduser = sessionStorage.getItem('lastAdduser') || '';
+    const lastMobile = sessionStorage.getItem('lastMobile') || '';
+
+    // Restore values in the form
+    document.getElementById('adduser').value = lastAdduser;
+    document.getElementById('mobile').value = lastMobile;
+
+    // Execute the last search
+    executeSearch(lastAdduser, lastMobile);
+});
+
 function searchUser() {
     const adduser = document.getElementById('adduser').value;
     const mobile = document.getElementById('mobile').value;
 
-    // Execute the search with current values
+    // Save the search values to sessionStorage
+    sessionStorage.setItem('lastAdduser', adduser);
+    sessionStorage.setItem('lastMobile', mobile);
+
     executeSearch(adduser, mobile);
 
-    // Store the search input in session storage
-    sessionStorage.setItem('adduser', adduser);
-    sessionStorage.setItem('mobile', mobile);
-
-    // Clear the input fields after storing in session
+    // Clear the search fields after the search
     document.getElementById('adduser').value = '';
     document.getElementById('mobile').value = '';
 }
@@ -136,7 +172,7 @@ function executeSearch(adduser, mobile) {
 
             data.forEach(user => {
                 userInfo += `
-                    <tr onclick="redirectToTransaction(${user.user_id}, '${user.first_name}', '${user.last_name}', '${user.mobile}', '${user.email}', '${user.user_role}')">
+                    <tr style="cursor: pointer;" onclick='redirectToTransaction("${user.first_name}", "${user.last_name}", "${user.mobile}", "${user.user_id}")'>
                         <td>${user.first_name}</td>
                         <td>${user.last_name}</td>
                         <td>${user.mobile}</td>
@@ -152,28 +188,22 @@ function executeSearch(adduser, mobile) {
     .catch(error => console.error('Error:', error));
 }
 
-function redirectToTransaction(user_id, first_name, last_name, mobile, email, user_role) {
-    // Store user info in session
-    sessionStorage.setItem('user_id', user_id);
-    sessionStorage.setItem('first_name', first_name);
-    sessionStorage.setItem('last_name', last_name);
-    sessionStorage.setItem('mobile', mobile);
-    sessionStorage.setItem('email', email);
-    sessionStorage.setItem('user_role', user_role);
+function redirectToTransaction(firstName, lastName, mobile, userId) {
+    const queryParams = new URLSearchParams({
+        first_name: firstName,
+        last_name: lastName,
+        mobile: mobile,
+        user_id: userId
+    });
 
-    // Redirect to transaction history page
-    window.location.href = 'transaction_history.php?user_id=' + user_id;
+    window.location.href = `transaction.php?${queryParams.toString()}`;
 }
-
-window.onload = function() {
-    const storedUsername = sessionStorage.getItem('adduser');
-    const storedMobile = sessionStorage.getItem('mobile');
-
-    if (storedUsername || storedMobile) {
-        executeSearch(storedUsername, storedMobile);
-    }
-};
 </script>
+
 
 </body>
 </html>
+
+
+
+<!-- perfectly working -->
