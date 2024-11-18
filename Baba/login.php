@@ -17,11 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result_admin->num_rows > 0) {
         $admin = $result_admin->fetch_assoc();
         $_SESSION['user_type'] = 'admin';
-        $_SESSION['admin_name'] = $admin['first_name'] . ' ' . $admin['last_name'];
+        $_SESSION['logged_in_admin'] = $admin['first_name'] . ' ' . $admin['last_name'];
         $_SESSION['afirst_name']=$admin['first_name'];
         $_SESSION['admin_mobile']=$_POST['mobile'];
         // Store full name as user_name
-        $_SESSION['user_id'] = $admin['ad_id']; // Store admin ID in session
+        $_SESSION['admin_id'] = $admin['ad_id']; // Store admin ID in session
         header("Location: home.php"); // Redirect to admin home page
         exit;
     }
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result_user->num_rows > 0) {
         $user = $result_user->fetch_assoc();
         $_SESSION['user_type'] = 'user';
-        $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name']; 
+        $_SESSION['logged_in_user'] = $user['first_name'] . ' ' . $user['last_name']; 
         $_SESSION['user_mobile']=$_POST['mobile'];
         $_SESSION['ufirst_name']=$user['first_name'];
         // Store full name as user_name
@@ -80,3 +80,7 @@ $conn->close();
     </form>
 </body>
 </html>
+<?php
+
+// session_destroy();
+?>
