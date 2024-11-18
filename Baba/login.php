@@ -59,9 +59,10 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="stylesheet" href="../csss/login.css">
 </head>
 <body>
-    <h2>Login</h2>
+
 
     <?php
     if (isset($error_message)) {
@@ -70,6 +71,7 @@ $conn->close();
     ?>
 
     <form method="POST" action="">
+        <h2>Login</h2>
         <label for="mobile">Mobile Number:</label>
         <input type="text" id="mobile" name="mobile" required><br><br>
 
