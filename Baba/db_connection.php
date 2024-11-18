@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set('Asia/Kolkata');
+
 $servername = "localhost"; // or your server name
 $username = "root";
 $password = "";

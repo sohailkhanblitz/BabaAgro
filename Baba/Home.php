@@ -92,7 +92,7 @@ $conn->close();
     </div>
 </nav>
 <?php
-// echo "Welcome to Home Page!". $_SESSION['admin_name'];
+echo "Welcome to Home Page!". $_SESSION['logged_in_admin'];
 ?>
 
 <div class="container">
@@ -207,3 +207,7 @@ function redirectToTransaction(firstName, lastName, mobile, userId) {
 
 
 <!-- perfectly working -->
+<?php
+
+// session_destroy();
+?>

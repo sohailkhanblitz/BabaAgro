@@ -2,7 +2,7 @@
 session_start();
 include 'db_connection.php'; // Ensure this file contains your database connection code
 
-$admin = $_SESSION['first_name'];
+$admin = $_SESSION['afirst_name'];
 
 $user_stmt = $conn->prepare("SELECT ad_id FROM admin_master WHERE first_name = ?");
 $user_stmt->bind_param("s", $admin);
