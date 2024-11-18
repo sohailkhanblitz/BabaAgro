@@ -160,10 +160,10 @@ if ($conn) {
           <tr>
             <th>Site Name</th>
             <th>Site Desc</th>
-            <th>Created Date</th>
+            <!-- <th>Created Date</th> -->
             <th>Product</th>
             <th>Status</th>
-            <th>Add More</th>
+            <th>Add</th>
           </tr>
         </thead>
         <tbody>
@@ -175,7 +175,11 @@ if ($conn) {
                 <tr>
                   <td><?php echo htmlspecialchars($site['site_name']); ?></td>
                   <td><?php echo htmlspecialchars($site['site_description']); ?></td>
-                  <td><?php echo htmlspecialchars($site['created_date']); ?></td>
+                  <!-- <td> -->
+                    <?php 
+                  // echo htmlspecialchars($site['created_date']);
+                   ?>
+                   <!-- </td> -->
                   <td><?php echo $site['product_name'] ? htmlspecialchars($site['product_name']) : 'No products added yet.'; ?></td>
                   <td><?php echo htmlspecialchars($site['status']); ?></td>
                   <td>
