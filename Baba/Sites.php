@@ -41,14 +41,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_product'])) {
     // Get form data
     $product_name = $conn->real_escape_string($_POST['product_name']);
     $site_id = intval($_POST['site_id']);
+    $status = $conn->real_escape_string($_POST['status']);  // Added status field
     $created_date = date('Y-m-d H:i:s');
     $created_by = $_SESSION['admin_id'];
     $updated_date = date('Y-m-d H:i:s');
     $updated_by = $_SESSION['admin_id'];
     
     // Insert query for adding a product
-    $sql = "INSERT INTO site_product (site_id, product_name, created_date, created_by, updated_date, updated_by) 
-            VALUES ('$site_id', '$product_name', '$created_date', '$created_by', '$updated_date', '$updated_by')";
+    $sql = "INSERT INTO site_product (site_id, product_name, status, created_date, created_by, updated_date, updated_by) 
+            VALUES ('$site_id', '$product_name', '$status', '$created_date', '$created_by', '$updated_date', '$updated_by')";
 
     if ($conn->query($sql) === TRUE) {
         header("Location: " . $_SERVER['PHP_SELF'] . "?success_product=1");
@@ -63,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_product'])) {
 // Fetch site details with associated products (ensure we get each product on a new row)
 $sites = [];
 if ($conn) {
-    $result = $conn->query("SELECT s.site_id, s.site_name, s.site_description, s.created_date, sp.product_name
+    $result = $conn->query("SELECT s.site_id, s.site_name, s.site_description, s.created_date, sp.product_name, sp.status
                             FROM sites s
                             LEFT JOIN site_product sp ON s.site_id = sp.site_id
                             ORDER BY s.site_name ");
@@ -161,6 +162,7 @@ if ($conn) {
             <th>Site Desc</th>
             <th>Created Date</th>
             <th>Product</th>
+            <th>Status</th>
             <th>Add More</th>
           </tr>
         </thead>
@@ -175,6 +177,7 @@ if ($conn) {
                   <td><?php echo htmlspecialchars($site['site_description']); ?></td>
                   <td><?php echo htmlspecialchars($site['created_date']); ?></td>
                   <td><?php echo $site['product_name'] ? htmlspecialchars($site['product_name']) : 'No products added yet.'; ?></td>
+                  <td><?php echo htmlspecialchars($site['status']); ?></td>
                   <td>
                     <!-- Add Product Button -->
                     <button type="button" onclick="openModal(<?php echo $site['site_id']; ?>)">+</button>
@@ -197,6 +200,14 @@ if ($conn) {
         <input type="hidden" id="modal_site_id" name="site_id">
         <label for="product_name">Product Name:</label>
         <input type="text" id="product_name" name="product_name" required>
+
+        <!-- Dropdown for Status -->
+        <label for="status">Status:</label>
+        <select id="status" name="status" required>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+
         <button type="submit" name="add_product">Add Product</button>
       </form>
     </div>
