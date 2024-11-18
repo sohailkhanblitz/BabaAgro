@@ -92,7 +92,7 @@ $conn->close();
     </div>
 </nav>
 <?php
-echo "Welcome to Home Page!". $_SESSION['admin_name'];
+// echo "Welcome to Home Page!". $_SESSION['admin_name'];
 ?>
 
 <div class="container">

@@ -1,6 +1,8 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
+
+    background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
   }
   .navbar {
     display: flex;
@@ -27,3 +29,228 @@ body {
     margin: 0 0.5rem;
   }
   
+
+/* General Container */
+.container {
+  width: 40%;
+  margin: 30px auto;
+  padding-top: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Form Container */
+.form-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* FadeIn Animation */
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+      transform: translateY(-20px);
+  }
+  100% {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+.form-container h2 {
+  text-align: center;
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: inline-block;
+  width: 100%;
+  color: #555;
+}
+
+/* Select and Input Styling */
+select, input[type="text"], input[type="tel"], input[type="email"], textarea {
+  width: 100%;
+  padding: 8px 12px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  box-sizing: border-box; /* ensures padding doesn't affect total width */
+  transition: all 0.3s ease;
+}
+
+/* Focus State Styling */
+select:focus, input[type="text"]:focus, input[type="tel"]:focus, input[type="email"]:focus, textarea:focus {
+  border-color: #4a90e2;
+  background-color: #eaf7e5;
+  outline: none;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.6);
+}
+
+/* Input Field Styling */
+input[type="text"], input[type="tel"], input[type="email"], textarea {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: 16px;
+  color: #555;
+  padding: 12px 15px;
+  margin: 10px 0;
+
+
+  
+}
+
+/* Mobile Field Styling */
+input[type="tel"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+
+
+
+  
+}
+
+/* Button Styling */
+button.info-btn {
+  /* background-color: #4CAF50; */
+
+  background: linear-gradient(90deg, #357abd, #4a90e2);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 6px;
+  width: 100%;
+  transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+}
+
+button.info-btn:hover {
+  /* background-color: #45a049; */
+  background: linear-gradient(90deg, #357abd, #4a90e2);
+  transform: translateY(-2px);
+}
+
+button.info-btn:active {
+  /* background-color: #388e3c; */
+  background: linear-gradient(90deg, #357abd, #4a90e2);
+  transform: translateY(1px);
+}
+
+/* User Info Table Styling */
+.user-info {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  0% {
+      opacity: 0;
+      transform: translateY(20px);
+  }
+  100% {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+.user-info table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.user-info th, .user-info td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 16px;
+  color: #555;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.user-info th {
+  background-color:#4a90e2;
+  color: white;
+  font-weight: 600;
+}
+
+.user-info tr {
+  transition: background-color 0.3s ease;
+}
+
+.user-info tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.user-info tr:active {
+  background-color: #ddd;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+      width: 90%;
+  }
+
+  /* Adjust the dropdown and input fields for small screens */
+  select, input, textarea {
+    width: 100%;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  button.info-btn {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+}
+
+/* Spinner Animation for Loading */
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #4CAF50;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+/* Spinner Animation */
+@keyframes spin {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}
