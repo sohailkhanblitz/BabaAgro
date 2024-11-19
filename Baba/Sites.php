@@ -84,7 +84,7 @@ if ($conn) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Site</title>
   <link rel="stylesheet" href="../Csss/Sites.css">
-  <style>
+  <!-- <style>
     /* Modal styles */
     .modal {
         display: none;
@@ -120,7 +120,7 @@ if ($conn) {
         text-decoration: none;
         cursor: pointer;
     }
-  </style>
+  </style> -->
 </head>
 <body>
   <nav class="navbar">
