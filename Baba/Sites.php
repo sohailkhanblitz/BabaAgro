@@ -60,11 +60,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_product'])) {
 
     $conn->close();
 }
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_status'])) {
+  if (!$conn) {
+      die("Database connection failed: " . mysqli_connect_error());
+  }
+
+  // Get form data
+  $product_id = intval($_POST['product_id']);
+  $new_status = $conn->real_escape_string($_POST['new_status']);
+  $updated_date = date('Y-m-d H:i:s');
+  $updated_by = $_SESSION['admin_id'];
+
+  // Update query for changing product status
+  $sql = "UPDATE site_product 
+          SET status = '$new_status', updated_date = '$updated_date', updated_by = '$updated_by' 
+          WHERE sp_id = $product_id";
+
+  if ($conn->query($sql) === TRUE) {
+      header("Location: " . $_SERVER['PHP_SELF'] . "?status_updated=1");
+      exit();
+  } else {
+      echo "<p>Error updating status: " . $conn->error . "</p>";
+  }
+
+  $conn->close();
+}
+
 
 // Fetch site details with associated products (ensure we get each product on a new row)
 $sites = [];
 if ($conn) {
-    $result = $conn->query("SELECT s.site_id, s.site_name, s.site_description, s.created_date, sp.product_name, sp.status
+    $result = $conn->query("SELECT s.site_id, s.site_name, s.site_description, s.created_date, sp.product_name, sp.status ,sp.sp_id
                             FROM sites s
                             LEFT JOIN site_product sp ON s.site_id = sp.site_id
                             ORDER BY s.site_name ");
@@ -76,6 +102,7 @@ if ($conn) {
     $conn->close();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -151,44 +178,51 @@ if ($conn) {
     <?php if (isset($_GET['success_product'])): ?>
       <p>Product added successfully!</p>
     <?php endif; ?>
+    <?php if (isset($_GET['status_updated'])): ?>
+     <p>Status updated successfully!</p>
+    <?php endif; ?>
+
 
     <!-- Display sites in a table -->
     <h3>Inserted Sites</h3>
     <?php if (!empty($sites)): ?>
       <table border="1">
-        <thead>
-          <tr>
-            <th>Site Name</th>
-            <th>Site Desc</th>
-            <!-- <th>Created Date</th> -->
-            <th>Product</th>
-            <th>Status</th>
-            <th>Add</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php
-            $current_site_id = null;
-            foreach ($sites as $site):
-                // For each product, display a new row with the site name
-                ?>
-                <tr>
-                  <td><?php echo htmlspecialchars($site['site_name']); ?></td>
-                  <td><?php echo htmlspecialchars($site['site_description']); ?></td>
-                  <!-- <td> -->
-                    <?php 
-                  // echo htmlspecialchars($site['created_date']);
-                   ?>
-                   <!-- </td> -->
-                  <td><?php echo $site['product_name'] ? htmlspecialchars($site['product_name']) : 'No products added yet.'; ?></td>
-                  <td><?php echo htmlspecialchars($site['status']); ?></td>
-                  <td>
-                    <!-- Add Product Button -->
-                    <button type="button" onclick="openModal(<?php echo $site['site_id']; ?>)">+</button>
-                  </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
+      <thead>
+  <tr>
+    <th>Site Name</th>
+    <th>Site Desc</th>
+    <th>Product</th>
+    <th>Status</th>
+    <th>Change Status</th> <!-- New column -->
+    <th>Add</th>
+  </tr>
+</thead>
+<tbody>
+  <?php
+    foreach ($sites as $site):
+  ?>
+    <tr>
+      <td><?php echo htmlspecialchars($site['site_name']); ?></td>
+      <td><?php echo htmlspecialchars($site['site_description']); ?></td>
+      <td><?php echo $site['product_name'] ? htmlspecialchars($site['product_name']) : 'No products added yet.'; ?></td>
+      <td><?php echo htmlspecialchars($site['status']); ?></td>
+      <td>
+        <!-- Dropdown for changing status -->
+        <form method="post" action="">
+          <input type="hidden" name="product_id" value="<?php echo $site['sp_id']; ?>">
+          <select name="new_status" onchange="this.form.submit()">
+            <option value="Active" <?php echo ($site['status'] == 'Active') ? 'selected' : ''; ?>>Active</option>
+            <option value="Inactive" <?php echo ($site['status'] == 'Inactive') ? 'selected' : ''; ?>>Inactive</option>
+          </select>
+        </form>
+      </td>
+      <td>
+        <button type="button" onclick="openModal(<?php echo $site['site_id']; ?>)">+</button>
+      </td>
+    </tr>
+  <?php endforeach; ?>
+</tbody>
+
       </table>
     <?php else: ?>
       <p>No sites found.</p>
