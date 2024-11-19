@@ -89,6 +89,11 @@
 <?php
 include 'db_connection.php'; // Ensure database connection
 session_start();
+if (!isset($_SESSION['admin_mobile'])) {
+  header("Location: login.php");
+  exit();
+}
+
 // Fetch products based on site_id
 if (isset($_POST['fetch_products'])) {
     $site_id = $_POST['site_id'];

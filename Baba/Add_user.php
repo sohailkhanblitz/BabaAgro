@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['admin_mobile'])) {
+    header("Location: login.php");
+    exit();
+  }
 include 'db_connection.php'; // Ensure this file contains your database connection code
 
 $admin = $_SESSION['afirst_name'];

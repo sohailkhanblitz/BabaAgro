@@ -1,9 +1,11 @@
 <?php
-session_start();
-
 // Include the database connection file
 include 'db_connection.php';
-
+session_start();
+if (!isset($_SESSION['admin_mobile'])) {
+    header("Location: login.php");
+    exit();
+}
 // Handle "Add Site" form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     if (!$conn) {
