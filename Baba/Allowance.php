@@ -15,6 +15,8 @@
       <a href="./Sites.php">Sites</a>
       <a href="./Add_user.php">Add User</a>
       <a href="./Allowance.php">Add Allowance</a>
+      <a href="./logout.php" style="float: right; color: red;">Logout</a>
+
     </div>
   </nav>
 
