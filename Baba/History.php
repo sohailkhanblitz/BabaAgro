@@ -2,6 +2,41 @@
 // Include the database connection file
 include 'db_connection.php';
 
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Retrieve and sanitize form inputs
+    $sp_id = intval($_POST['sp_id']);
+    $user_id = intval($_POST['user_id']);
+    $ex_header = $conn->real_escape_string($_POST['ex_header']);
+    $ex_amount = floatval($_POST['ex_amount']);
+    $date = $conn->real_escape_string($_POST['date']);
+    $file_path = null;
+
+    // Handle file upload if provided
+    if (isset($_FILES['file_path']) && $_FILES['file_path']['error'] === UPLOAD_ERR_OK) {
+        $file_name = basename($_FILES['file_path']['name']);
+        $target_dir = "uploads/";
+        $file_path = $target_dir . $file_name;
+        if (!move_uploaded_file($_FILES['file_path']['tmp_name'], $file_path)) {
+            echo "Error uploading file.";
+            exit;
+        }
+    }
+
+    // Insert data into expense_master table
+    $created_date = date('Y-m-d H:i:s');
+    $query = "INSERT INTO expense_master (sp_id, user_id, ex_header, ex_amount, date, file_path, created_date) 
+              VALUES ($sp_id, $user_id, '$ex_header', $ex_amount, '$date', '$file_path', '$created_date')";
+
+    if ($conn->query($query)) {
+        // Redirect to the same page to avoid resubmission issues
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?site_id=' . $_GET['site_id'] . '&sp_id=' . $sp_id . '&user_id=' . $user_id . '&view=expense');
+        exit;
+    } else {
+        echo "Error: " . $conn->error;
+    }
+}
+
 // Fetch query string parameters
 $site_id = isset($_GET['site_id']) ? intval($_GET['site_id']) : 0;
 $sp_id = isset($_GET['sp_id']) ? intval($_GET['sp_id']) : 0;
@@ -94,16 +129,51 @@ if ($result && $result->num_rows > 0) {
         th {
             background-color: #f4f4f4;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 400px;
+            border-radius: 10px;
+        }
+        .modal.active {
+            display: block;
+        }
+        .modal-header {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .modal-footer {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .modal-footer button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+        }
+        .close-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .save-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <!-- Header Section -->
     <div class="header">
         <h1><?= htmlspecialchars($site_name) ?></h1>
         <h2>Product: <?= htmlspecialchars($product_name) ?></h2>
     </div>
 
-    <!-- Toggle Buttons -->
     <div class="toggle-container">
         <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=allowance"
            class="<?= $view === 'allowance' ? 'active' : '' ?>">Allowance History</a>
@@ -113,14 +183,16 @@ if ($result && $result->num_rows > 0) {
 
     <h2><?= ucfirst($view) ?> Records</h2>
 
-    <!-- Records Table -->
+    <?php if ($view === 'expense') : ?>
+        <button onclick="openModal()">Add Expense</button>
+    <?php endif; ?>
+
     <?php if (!empty($records)) : ?>
         <table>
             <thead>
                 <tr>
                     <?php if ($view === 'allowance') : ?>
                         <th>Amount</th>
-                        <th>Date</th>
                         <th>Created Date</th>
                     <?php else : ?>
                         <th>Expense ID</th>
@@ -137,14 +209,13 @@ if ($result && $result->num_rows > 0) {
                     <tr>
                         <?php if ($view === 'allowance') : ?>
                             <td><?= $record['al_amount'] ?></td>
-                            <td><?= $record['date'] ?></td>
                             <td><?= $record['created_date'] ?></td>
                         <?php else : ?>
                             <td><?= $record['ex_id'] ?></td>
                             <td><?= $record['ex_header'] ?></td>
                             <td><?= $record['ex_amount'] ?></td>
-                            <td><?= $record['date'] ?></td>
-                            <td><?= $record['file_path'] ?></td>
+                            <td><?= $record['date'] ?></td> 
+                            <td><a href="<?= $record['file_path'] ?>" target="_blank">View File</a></td>
                             <td><?= $record['created_date'] ?></td>
                         <?php endif; ?>
                     </tr>
@@ -154,10 +225,42 @@ if ($result && $result->num_rows > 0) {
     <?php else : ?>
         <p>No records found.</p>
     <?php endif; ?>
+
+    <div class="modal" id="addExpenseModal">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="modal-header">Add Expense</div>
+            <input type="hidden" name="sp_id" value="<?= $sp_id ?>">
+            <input type="hidden" name="user_id" value="<?= $user_id ?>">
+            <label for="ex_header">Header</label>
+            <input type="text" id="ex_header" name="ex_header" required><br><br>
+            <label for="ex_amount">Amount</label>
+            <input type="number" id="ex_amount" name="ex_amount" required><br><br>
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" required><br><br>
+            <label for="file_path">Upload File</label>
+            <input type="file" id="file_path" name="file_path"><br><br>
+            <div class="modal-footer">
+                <button type="button" class="close-btn" onclick="closeModal()">Close</button>
+                <button type="submit" class="save-btn">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('addExpenseModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('addExpenseModal').classList.remove('active');
+        }
+    </script>
 </body>
 </html>
 
 <?php
-// Close the database connection
 $conn->close();
 ?>
+
+
+<!-- working  -->

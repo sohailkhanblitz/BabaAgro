@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['ufirst_name']=$user['first_name'];
         // Store full name as user_name
         $_SESSION['user_id'] = $user['user_id']; // Store user ID in session
-        header("Location: expence.php"); // Redirect to user expense page
+        header("Location: Allotted_sites.php"); // Redirect to user expense page
         exit;
     }
 
