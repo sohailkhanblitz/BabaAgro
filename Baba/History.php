@@ -90,85 +90,10 @@ if ($result && $result->num_rows > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>History Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .toggle-container {
-            margin-bottom: 20px;
-        }
-        .toggle-container a {
-            padding: 10px 20px;
-            text-decoration: none;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-right: 10px;
-            color: #000;
-            background-color: #f1f1f1;
-        }
-        .toggle-container a.active {
-            background-color: #007bff;
-            color: #fff;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1000;
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 400px;
-            border-radius: 10px;
-        }
-        .modal.active {
-            display: block;
-        }
-        .modal-header {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        .modal-footer {
-            margin-top: 20px;
-            text-align: right;
-        }
-        .modal-footer button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-        }
-        .close-btn {
-            background-color: #f44336;
-            color: white;
-        }
-        .save-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="../Csss/history.css">
 </head>
 <body>
+    <div class="container">
     <div class="header">
         <h1><?= htmlspecialchars($site_name) ?></h1>
         <h2>Product: <?= htmlspecialchars($product_name) ?></h2>
@@ -225,8 +150,8 @@ if ($result && $result->num_rows > 0) {
     <?php else : ?>
         <p>No records found.</p>
     <?php endif; ?>
-
-    <div class="modal" id="addExpenseModal">
+    <div id="addExpenseModal">
+    <div class="modal-content" >
         <form method="POST" enctype="multipart/form-data">
             <div class="modal-header">Add Expense</div>
             <input type="hidden" name="sp_id" value="<?= $sp_id ?>">
@@ -245,6 +170,7 @@ if ($result && $result->num_rows > 0) {
             </div>
         </form>
     </div>
+    </div>
 
     <script>
         function openModal() {
@@ -255,6 +181,7 @@ if ($result && $result->num_rows > 0) {
             document.getElementById('addExpenseModal').classList.remove('active');
         }
     </script>
+    </div>
 </body>
 </html>
 

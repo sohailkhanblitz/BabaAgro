@@ -54,23 +54,22 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assigned Sites and Products</title>
-    <style>
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #f4f4f4; }
-        tr { cursor: pointer; }
-    </style>
+   
     <script>
         function redirectToHistory(userId, spId, siteId) {
             window.location.href = `history.php?user_id=${userId}&sp_id=${spId}&site_id=${siteId}`;
         }
     </script>
+
+<link rel="stylesheet" href="../Csss/allotted.css">
 </head>
 <body>
+    <div class="container">
+<h1>Assigned Sites and Products</h1>
 <?php
 echo "Welcome, " . htmlspecialchars($_SESSION['logged_in_user']);
 ?>
-    <h1>Assigned Sites and Products</h1>
+ 
     <?php if (!empty($data)): ?>
         <table>
             <thead>
@@ -93,5 +92,6 @@ echo "Welcome, " . htmlspecialchars($_SESSION['logged_in_user']);
     <?php else: ?>
         <p>No sites and products found with allowances assigned to you.</p>
     <?php endif; ?>
+    </div>
 </body>
 </html>

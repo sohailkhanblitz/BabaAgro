@@ -6,16 +6,19 @@
   <title>Add Allowance</title>
   <link rel="stylesheet" href="../Csss/Allowance.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar">
     <div class="nav-items">
+    <a href="./logout.php"><i class="fas fa-sign-out-alt"></i></a>
       <a href="./Home.php">Home</a>
       <a href="./Sites.php">Sites</a>
       <a href="./Add_user.php">Add User</a>
       <a href="./Allowance.php">Add Allowance</a>
-      <a href="./logout.php" style="float: right; color: red;">Logout</a>
+  
 
     </div>
   </nav>

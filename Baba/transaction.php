@@ -43,23 +43,7 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Allowances</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="../Csss/transaction.css">
 </head>
 <body>
     <h1>Allowances</h1>

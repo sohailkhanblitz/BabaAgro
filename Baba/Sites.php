@@ -113,58 +113,24 @@ if ($conn) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Site</title>
   <link rel="stylesheet" href="../Csss/Sites.css">
-  <!-- <style>
-    /* Modal styles */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgb(0,0,0);
-        background-color: rgba(0,0,0,0.4);
-    }
-
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-  </style> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+ 
 </head>
 <body>
   <nav class="navbar">
     <div class="nav-items">
+    <a href="./logout.php"><i class="fas fa-sign-out-alt"></i></a>
       <a href="./Home.php">Home</a>
       <a href="./Sites.php">Sites</a>
       <a href="./Add_user.php">Add User</a>
       <a href="./Allowance.php">Add Allowance</a>
-      <a href="./logout.php" style="float: right; color: red;">Logout</a>
+    
 
     </div>
   </nav>
 
   <div class="container">
-    <h2>Add Site Details</h2>
+    <h2 style=" text-align: center;">Add Site Details</h2>
     <form action="" method="post">
       <label for="site_name">Site Name:</label>
       <input type="text" id="site_name" name="site_name" required>
@@ -188,8 +154,10 @@ if ($conn) {
 
 
     <!-- Display sites in a table -->
-    <h3>Inserted Sites</h3>
+   
     <?php if (!empty($sites)): ?>
+      <div class="table-responsive">
+      <h3>Inserted Sites</h3>
       <table border="1">
       <thead>
   <tr>
@@ -228,6 +196,7 @@ if ($conn) {
 </tbody>
 
       </table>
+    </div>
     <?php else: ?>
       <p>No sites found.</p>
     <?php endif; ?>
@@ -237,7 +206,7 @@ if ($conn) {
   <div id="productModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
-      <h2>Add Product</h2>
+      <h2 class="add">Add Product</h2>
       <form action="" method="post">
         <input type="hidden" id="modal_site_id" name="site_id">
         <label for="product_name">Product Name:</label>
@@ -265,6 +234,12 @@ if ($conn) {
         document.getElementById("productModal").style.display = "none";
     }
   </script>
+
+
+
+
+
+
 
 </body>
 </html>

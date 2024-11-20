@@ -1,0 +1,189 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Body Styles */
+  body {
+    background: linear-gradient(135deg, #f4f7fb, #e1e8f1);
+    color: #333;
+    font-size: 16px;
+    line-height: 1.6;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Header Styles */
+  h1 {
+    text-align: center;
+    color: #444;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  
+  /* User Info Section */
+  p {
+    text-align: center;
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 30px;
+    font-weight: 300;
+  }
+  
+  /* Table Styles */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  }
+  
+  thead {
+    background: #4a90e2;
+    color: #fff;
+    font-weight: 500;
+  }
+  
+  th, td {
+    padding: 12px 20px;
+    border: 1px solid #f0f0f0;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  th {
+    background: #4a90e2;
+  }
+  
+  td {
+    background: #ffffff;
+    color: #666;
+  }
+  
+  tr:hover {
+    background-color: #f9f9f9;
+    cursor: pointer;
+  }
+  
+  td, th {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Hover Effect on Table */
+  tr:hover td {
+    background-color: #f1f9ff;
+  }
+  
+  /* Smooth Transition for Table */
+  table, th, td {
+    transition: all 0.3s ease;
+  }
+  
+  /* Container Styles */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.6s ease-in-out;
+  }
+  
+  /* Navbar Styles */
+  .navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .nav-items a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 20px;
+    font-size: 16px;
+    font-weight: 500;
+    position: relative;
+    transition: color 0.3s, transform 0.2s;
+  }
+  
+  .nav-items a:hover {
+    color: #4a90e2;
+    transform: translateY(-2px);
+  }
+  
+  /* Fade-In Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .navbar {
+      flex-direction: column;
+      padding: 10px 15px;
+    }
+  
+    .nav-items a {
+      margin: 10px 0;
+      font-size: 14px;
+    }
+  
+    .container {
+      width: 90%;
+      padding: 15px;
+      margin: 20px auto;
+    }
+  
+    h1 {
+      font-size: 24px;
+    }
+  
+    p {
+      font-size: 16px;
+    }
+  
+    table {
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .container {
+      padding: 10px;
+      margin: 10px auto;
+    }
+  
+    h1 {
+      font-size: 20px;
+    }
+  
+    p {
+      font-size: 14px;
+    }
+  
+    table {
+      font-size: 12px;
+    }
+  }
+  

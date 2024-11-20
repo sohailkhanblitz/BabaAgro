@@ -1,28 +1,181 @@
+/* Reset CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Body Styles */
 body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-    .navbar {
-      display: flex;
-      /* justify-content: space-between; */
-      align-items:center;
-      justify-content:center;
-      align-items: center;
-      background-color: #333;
-      padding: 0.5rem 1rem;
-    }
-    .navbar a {
-      color: white;
-      text-decoration: none;
-      padding: 0.5rem 1rem;
-      transition: background-color 0.3s ease;
-    }
-    .navbar a:hover {
-      background-color: #575757;
-    }
-    .navbar .nav-items {
-      display: flex;
-    }
-    .navbar .nav-items a {
-      margin: 0 0.5rem;
-    }
+  background: linear-gradient(135deg, #f0f8ff, #e6eef4);
+  color: #333;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Navbar Styles */
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 15px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+
+}
+
+.nav-items a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 20px;
+  font-size: 18px;
+  font-weight: bold;
+  position: relative;
+  transition: color 0.3s, transform 0.2s;
+
+
+
+  
+}
+.nav-items {
+  display: flex; /* Ensure the nav items are aligned horizontally */
+}
+.nav-items a:hover {
+  color: #4a90e2;
+  transform: translateY(-3px);
+}
+.nav-items .logout i {
+  margin-right: 8px; /* Space between icon and text */
+}
+
+/* Form Section */
+.form-container {
+  max-width: 400px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #444;
+}
+
+/* Form Styles */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  margin-bottom: 5px;
+  color: #555;
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+form input:focus,
+form select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 10px rgba(74, 144, 226, 0.4);
+}
+
+button {
+  background: linear-gradient(90deg, #357abd, #4a90e2);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #336799, #3b82d1);
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Success and Error Messages */
+.success-message {
+  color: #28a745;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: #dc3545;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Fade-In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 10px 15px;
+  }
+
+  .nav-items a {
+    margin: 10px 11px;
+    font-size: 14px;
+  }
+
+  .form-container {
+    max-width: 90%;
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  button {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    max-width: 90%;
+    margin: 20px auto;
+    padding: 10px;
+  }
+
+  button {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}

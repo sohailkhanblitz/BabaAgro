@@ -64,21 +64,25 @@ $conn->close();
 <body>
 
 
-    <?php
-    if (isset($error_message)) {
-        echo "<p style='color:red;'>$error_message</p>";
-    }
-    ?>
+   
 
     <form method="POST" action="">
+ 
         <h2>Login</h2>
         <label for="mobile">Mobile Number:</label>
         <input type="text" id="mobile" name="mobile" required><br><br>
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required><br><br>
+        <?php
+        if (isset($error_message)) {
+            echo "<p style='color:red;'>$error_message</p>";
+        }
+        ?>
 
         <input type="submit" value="Login">
+
+        
     </form>
 </body>
 </html>

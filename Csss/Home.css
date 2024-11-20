@@ -21,10 +21,15 @@ body {
   align-items: center;
   background: rgba(0, 0, 0, 0.9);
   padding: 15px 20px;
+  
   position: sticky;
   top: 0;
   z-index: 1000;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+.nav-items {
+  display: flex; /* Ensure the nav items are aligned horizontally */
 }
 
 .nav-items a {
@@ -42,7 +47,11 @@ body {
   transform: translateY(-3px);
 }
 
-/* Container Styles */
+.nav-items .logout i {
+  margin-right: 8px; /* Space between icon and text */
+}
+
+
 .container {
   max-width: 600px;
   margin: 50px auto;
@@ -147,7 +156,7 @@ body {
 
 .user-info th,
 .user-info td {
-  padding: 7px;
+  padding: 6px;
   border: 1px solid #e0e0e0;
   text-align: center;
 }
@@ -159,9 +168,7 @@ body {
  
 }
 
-.user-info td {
-  /* background: #f9fbfc; */
-}
+
 
 /* Fade-In Animation */
 @keyframes fadeIn {
@@ -177,105 +184,5 @@ body {
 
 
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    padding: 10px 15px;
-  }
-
-  .nav-items a {
-    margin: 10px 14px;
-    font-size: 16px;
-  }
-
-  .container {
-    width: 90%;
-    padding: 15px;
-    margin: 20px auto;
-  }
-
-  .form-container h2 {
-    font-size: 18px;
-  }
-
-  .form-container input,
-  .form-container select {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-  }
-
-  .info-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-  }
-
-  .user-info h2 {
-    font-size: 18px;
-  }
-
-  .user-info table {
-    font-size: 14px;
-  }
-}
-
-/* For Small Devices (Phones) */
-@media (max-width: 480px) {
-  .nav-items a {
-    font-size: 14px;
-  }
-
-  .container {
-    padding: 10px;
-    margin: 10px auto;
-  }
-
-  .form-container h2 {
-    font-size: 16px;
-  }
-
-  .form-container input,
-  .form-container select {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  .info-btn {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  .user-info h2 {
-    font-size: 16px;
-    text-align: left;
-  }
-
-  .user-info table {
-    font-size: 9px;
-  }
 
 
-  .form-container label {
-    display: block;
-    /* margin: 8px 0 4px; */
-    font-weight: bold;
-    color: #555;
-    /* text-align: left; */
-    margin-left: 6px;
-}
-}
