@@ -52,7 +52,7 @@ body {
 
 /* Container Styles */
 .container {
-  max-width: 600px;
+  max-width: 500px;
   margin: 50px auto;
   padding: 20px;
   background: #ffffff;
@@ -306,7 +306,7 @@ table {
 }
 
 th, td {
-  padding: 12px;
+  padding: 6px;
   border: 1px solid #e0e0e0;
   text-align: center;
 }
