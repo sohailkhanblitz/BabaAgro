@@ -170,7 +170,7 @@ if ($conn) {
       <thead>
   <tr>
     <th>Site Name</th>
-    <th>Site Desc</th>
+    <th>Desc</th>
     <th>Product</th>
     <th>Status</th>
     <th>Change Status</th> <!-- New column -->

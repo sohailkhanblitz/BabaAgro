@@ -1,7 +1,7 @@
 <?php
 // Include the database connection file
 include 'db_connection.php';
-
+session_start();
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve and sanitize form inputs
@@ -111,12 +111,10 @@ if ($result && $result->num_rows > 0) {
     </div>
 
 
-    <?php if ($view === 'expense') : ?>
-        <div class="expense">
-            <button onclick="openModal()">+</button>
-        </div>
-    <?php endif; ?>
-    </div>
+    <?php if ($view === 'expense' && $_SESSION['user_type'] !== 'admin') : ?>
+    <button onclick="openModal()">Add Expense</button>
+<?php endif; ?>
+
 
     <?php if (!empty($records)) : ?>
         <table>

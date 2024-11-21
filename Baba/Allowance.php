@@ -26,7 +26,7 @@
   <!-- Form Section -->
   <div class="form-container">
     <h2>Add Allowance</h2>
-    <form action="allowance.php" method="POST">
+    <form action="Allowance.php" method="POST">
       <!-- User Dropdown -->
       <label for="user">Select User:</label>
       <select name="user_id" id="user" required>
@@ -75,7 +75,7 @@
         $('#product').html('<option value="">Loading...</option>');
         if (siteId) {
           $.ajax({
-            url: 'allowance.php', // The same file handles the request
+            url: 'Allowance.php', // The same file handles the request
             type: 'POST',
             data: { site_id: siteId, fetch_products: true },
             success: function(response) {
