@@ -108,12 +108,15 @@ if ($result && $result->num_rows > 0) {
            class="<?= $view === 'allowance' ? 'active' : '' ?>">Allowance</a>
         <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=expense"
            class="<?= $view === 'expense' ? 'active' : '' ?>">Expense</a>
-    </div>
-
+ 
+</div>
 
     <?php if ($view === 'expense' && $_SESSION['user_type'] !== 'admin') : ?>
-    <button onclick="openModal()">Add Expense</button>
+        <div class="expense">
+            <button onclick="openModal()">+</button>
+        </div>
 <?php endif; ?>
+</div>
 
 
     <?php if (!empty($records)) : ?>
