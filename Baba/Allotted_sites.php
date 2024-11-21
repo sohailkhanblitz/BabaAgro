@@ -5,8 +5,8 @@ include 'db_connection.php'; // Your database connection file
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    echo "You need to log in first.";
-    exit;
+    header("Location: login.php");
+    exit();
 }
 
 // Get user ID from session
@@ -19,24 +19,42 @@ $sql = "
         s.site_id,
         s.site_name, 
         sp.product_name, 
-        SUM(am.al_amount) AS total_allowance,
-        COALESCE(SUM(em.ex_amount), 0) AS total_expense
+        (
+            SELECT 
+                SUM(am.al_amount) 
+            FROM 
+                allowance_master am 
+            WHERE 
+                am.sp_id = sp.sp_id AND am.user_id = ?
+        ) AS total_allowance,
+        (
+            SELECT 
+                COALESCE(SUM(em.ex_amount), 0) 
+            FROM 
+                expense_master em 
+            WHERE 
+                em.sp_id = sp.sp_id AND em.user_id = ?
+        ) AS total_expense
     FROM 
         site_product sp
     JOIN 
-        allowance_master am ON am.sp_id = sp.sp_id AND am.user_id = ?
-    LEFT JOIN 
-        expense_master em ON em.sp_id = sp.sp_id AND em.user_id = ?
-    JOIN 
         sites s ON sp.site_id = s.site_id
+    WHERE 
+        sp.sp_id IN (
+            SELECT DISTINCT sp_id FROM allowance_master WHERE user_id = ?
+        )
     GROUP BY 
         sp.sp_id, s.site_id, s.site_name, sp.product_name
 ";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $user_id, $user_id);
+
+// Bind all three occurrences of $user_id
+$stmt->bind_param("iii", $user_id, $user_id, $user_id);
+
 $stmt->execute();
 $result = $stmt->get_result();
+
 
 // Organize data into an array
 $data = [];
@@ -60,15 +78,17 @@ $conn->close();
             window.location.href = `history.php?user_id=${userId}&sp_id=${spId}&site_id=${siteId}`;
         }
     </script>
-
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
 <link rel="stylesheet" href="../Csss/allotted.css">
 </head>
 <body>
     <div class="container">
-<h1>Assigned Sites and Products</h1>
+        
+    <a href="./logout.php"><img src="../power-on.png" alt=""></a>
 <?php
 echo "Welcome, " . htmlspecialchars($_SESSION['logged_in_user']);
 ?>
+<h1>Assigned Sites and Products</h1>
  
     <?php if (!empty($data)): ?>
         <table>
