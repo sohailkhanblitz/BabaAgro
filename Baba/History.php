@@ -95,22 +95,28 @@ if ($result && $result->num_rows > 0) {
 <body>
     <div class="container">
     <div class="header">
-        <h1><?= htmlspecialchars($site_name) ?></h1>
+        <h1>Site: <?= htmlspecialchars($site_name) ?></h1>
         <h2>Product: <?= htmlspecialchars($product_name) ?></h2>
     </div>
 
-    <div class="toggle-container">
-        <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=allowance"
-           class="<?= $view === 'allowance' ? 'active' : '' ?>">Allowance History</a>
-        <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=expense"
-           class="<?= $view === 'expense' ? 'active' : '' ?>">Expense History</a>
-    </div>
+   
 
     <h2><?= ucfirst($view) ?> Records</h2>
+    <div class="toggle">
+    <div class="toggle-container " >
+        <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=allowance"
+           class="<?= $view === 'allowance' ? 'active' : '' ?>">Allowance</a>
+        <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=expense"
+           class="<?= $view === 'expense' ? 'active' : '' ?>">Expense</a>
+    </div>
+
 
     <?php if ($view === 'expense') : ?>
-        <button onclick="openModal()">Add Expense</button>
+        <div class="expense">
+            <button onclick="openModal()">+</button>
+        </div>
     <?php endif; ?>
+    </div>
 
     <?php if (!empty($records)) : ?>
         <table>
@@ -120,10 +126,10 @@ if ($result && $result->num_rows > 0) {
                         <th>Amount</th>
                         <th>Created Date</th>
                     <?php else : ?>
-                        <th>Expense ID</th>
+                        <!-- <th>Expense ID</th> -->
                         <th>Header</th>
                         <th>Amount</th>
-                        <th>Date</th>
+                        <!-- <th>Date</th> -->
                         <th>File Path</th>
                         <th>Created Date</th>
                     <?php endif; ?>
@@ -136,10 +142,10 @@ if ($result && $result->num_rows > 0) {
                             <td><?= $record['al_amount'] ?></td>
                             <td><?= $record['created_date'] ?></td>
                         <?php else : ?>
-                            <td><?= $record['ex_id'] ?></td>
+                            <!-- <td><?= $record['ex_id'] ?></td> -->
                             <td><?= $record['ex_header'] ?></td>
                             <td><?= $record['ex_amount'] ?></td>
-                            <td><?= $record['date'] ?></td> 
+                            <!-- <td><?= $record['date'] ?></td>  -->
                             <td><a href="<?= $record['file_path'] ?>" target="_blank">View File</a></td>
                             <td><?= $record['created_date'] ?></td>
                         <?php endif; ?>
@@ -165,8 +171,9 @@ if ($result && $result->num_rows > 0) {
             <label for="file_path">Upload File</label>
             <input type="file" id="file_path" name="file_path"><br><br>
             <div class="modal-footer">
+                 <button type="submit" class="save-btn">Save</button>
                 <button type="button" class="close-btn" onclick="closeModal()">Close</button>
-                <button type="submit" class="save-btn">Save</button>
+              
             </div>
         </form>
     </div>

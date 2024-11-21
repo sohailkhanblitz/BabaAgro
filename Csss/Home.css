@@ -21,15 +21,13 @@ body {
   align-items: center;
   background: rgba(0, 0, 0, 0.9);
   padding: 15px 20px;
-  
   position: sticky;
   top: 0;
   z-index: 1000;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
-}
 
-.nav-items {
-  display: flex; /* Ensure the nav items are aligned horizontally */
+
+  
 }
 
 .nav-items a {
@@ -40,6 +38,8 @@ body {
   font-weight: bold;
   position: relative;
   transition: color 0.3s, transform 0.2s;
+
+  
 }
 
 .nav-items a:hover {
@@ -48,10 +48,10 @@ body {
 }
 
 .nav-items .logout i {
-  margin-right: 8px; /* Space between icon and text */
+  margin-right: 8px; /* Add some space between the icon and text */
 }
 
-
+/* Container Styles */
 .container {
   max-width: 600px;
   margin: 50px auto;
@@ -168,7 +168,9 @@ body {
  
 }
 
-
+.user-info td {
+  /* background: #f9fbfc; */
+}
 
 /* Fade-In Animation */
 @keyframes fadeIn {
@@ -184,5 +186,143 @@ body {
 
 
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 15px 20px;
+
+    
+  }
+
+  .nav-items a {
+    margin: 10px 9px;
+    font-size: 16px;
+  }
+
+  .container {
+    width: 90%;
+    padding: 15px;
+    margin: 20px auto;
+  }
+
+  .form-container h2 {
+    font-size: 18px;
+  }
+
+  .form-container input,
+  .form-container select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .info-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .user-info h2 {
+    font-size: 18px;
+  }
+
+  .user-info table {
+    font-size: 14px;
+  }
+}
 
 
+
+
+/* For Small Devices (Phones) */
+@media (max-width: 480px) {
+  .nav-items a {
+    font-size: 14px;
+  }
+
+  .navbar {
+    flex-direction: column;
+    padding: 18px 15px; /* Adjust the padding for smaller screens */
+  }
+
+
+
+  .container {
+    padding: 10px;
+    /* margin: 10px auto; */
+    margin-top: 60px;
+
+    width: 90%;
+  }
+
+  .form-container h2 {
+    font-size: 16px;
+  }
+
+  .form-container input,
+  .form-container select {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .info-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .user-info h2 {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .user-info table {
+    font-size: 12px;
+    width: 124%;
+  }
+
+
+  .form-container label {
+    display: block;
+    /* margin: 8px 0 4px; */
+    font-weight: bold;
+    color: #555;
+    /* text-align: left; */
+    margin-left: 6px;
+}
+
+
+}
+
+
+
+.user-info table tr:hover td {
+  background-color: #f1f1f1; /* Optional: Highlight the row on hover */
+}
+
+
+
+
+
+
+
+
+
+.user-info table tr:hover td {
+  color: blue; /* Change text color to blue */
+  text-decoration: none; /* Add underline to text */
+  cursor: pointer; /* Change cursor to pointer */
+}

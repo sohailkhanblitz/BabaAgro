@@ -70,10 +70,10 @@ $conn->close();
  
         <h2>Login</h2>
         <label for="mobile">Mobile Number:</label>
-        <input type="text" id="mobile" name="mobile" required><br><br>
+        <input type="text" id="mobile" name="mobile" required placeholder="Enter Number"><br><br>
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+        <input type="password" id="password" name="password" required placeholder="Enter Password"><br><br>
         <?php
         if (isset($error_message)) {
             echo "<p style='color:red;'>$error_message</p>";

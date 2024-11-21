@@ -141,16 +141,24 @@ if ($conn) {
       <button type="submit" name="submit">Add Site</button>
     </form>
 
+  
     <!-- Display success messages -->
     <?php if (isset($_GET['success'])): ?>
-      <p>Site added successfully!</p>
+      <div class="site" id="success-site">
+         <p>Site added successfully!</p>
+      </div>
     <?php endif; ?>
     <?php if (isset($_GET['success_product'])): ?>
-      <p>Product added successfully!</p>
+      <div class="product" id="success-product">
+          <p>Product added successfully!</p>
+      </div>
     <?php endif; ?>
     <?php if (isset($_GET['status_updated'])): ?>
-     <p>Status updated successfully!</p>
+      <div class="status" id="status-updated">
+         <p>Status updated successfully!</p>
+     </div>
     <?php endif; ?>
+
 
 
     <!-- Display sites in a table -->
@@ -234,6 +242,9 @@ if ($conn) {
         document.getElementById("productModal").style.display = "none";
     }
   </script>
+
+
+
 
 
 
