@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['afirst_name'] = $admin['first_name'];
         $_SESSION['admin_mobile'] = $_POST['mobile'];
         $_SESSION['admin_id'] = $admin['ad_id'];
-        header("Location: home.php");
+        header("Location: Home.php");
         exit;
     }
 
@@ -54,7 +54,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="../csss/login.css">
+    <link rel="stylesheet" href="../Csss/login.css">
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             setTimeout(function () {
