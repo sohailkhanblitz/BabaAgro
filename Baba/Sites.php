@@ -122,8 +122,8 @@ if ($conn) {
     <a href="./logout.php"><i class="fas fa-sign-out-alt"></i></a>
       <a href="./Home.php">Home</a>
       <a href="./Sites.php">Sites</a>
-      <a href="./Add_user.php">Add User</a>
-      <a href="./Allowance.php">Add Allowance</a>
+      <a href="./Add_user.php">User</a>
+      <a href="./Allowance.php">Allowance</a>
     
 
     </div>
@@ -164,12 +164,12 @@ if ($conn) {
     <!-- Display sites in a table -->
    
     <?php if (!empty($sites)): ?>
+      <h3>Sites</h3>
       <div class="table-responsive">
-      <h3>Inserted Sites</h3>
       <table border="1">
       <thead>
   <tr>
-    <th>Site Name</th>
+    <th>Site</th>
     <th>Desc</th>
     <th>Product</th>
     <th>Status</th>
@@ -193,6 +193,8 @@ if ($conn) {
           <select name="new_status" onchange="this.form.submit()">
             <option value="Active" <?php echo ($site['status'] == 'Active') ? 'selected' : ''; ?>>Active</option>
             <option value="Inactive" <?php echo ($site['status'] == 'Inactive') ? 'selected' : ''; ?>>Inactive</option>
+            
+            <option value="pushed for settlement" <?php echo ($site['status'] == 'pushed for settlement') ? 'selected' : ''; ?>>pushed for settlement</option>
           </select>
         </form>
       </td>
