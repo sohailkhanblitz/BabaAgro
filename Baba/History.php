@@ -154,7 +154,7 @@ if ($result && $result->num_rows > 0) {
                 <button id="pushForSettlementBtn" data-sp_id="<?= $sp_id ?>">Push for Settlement</button>
                 <?php else : ?>
                 <button disabled>+</button>
-                <button disabled>Already Pushed</button>
+                <button disabled id="pushForSettlementBtn" data-sp_id="<?= $sp_id ?>">Push for Settlement</button>
                 <?php endif; ?>
             </div>
             <?php endif; ?>
@@ -221,13 +221,55 @@ if ($result && $result->num_rows > 0) {
                         <input type="date" id="date" name="date" required><br><br>
                         <label for="file_path">Upload File</label>
                         <input type="file" id="file_path" name="file_path"><br><br>
+                        <button type="button" id="clearFileBtn" class="clear-btn" style="margin-right: 10px;">Clear File</button>
+                        <div id="fileError" style="color: red; display: none;">Uploaded file exceeds the 35 MB limit.</div>
                         <div class="modal-footer">
-                            <button type="submit" class="save-btn">Save</button>
+                            <button type="submit" id="submitBtn" class="save-btn">Save</button>
                             <button type="button" class="close-btn" onclick="closeModal()">Close</button>
                         </div>
                     </form>
                 </div>
             </div>
+<script>
+    // Get references to elements
+const fileInput = document.getElementById('file_path');
+const fileError = document.getElementById('fileError');
+const clearFileBtn = document.getElementById('clearFileBtn');
+
+// Clear File Button Logic
+clearFileBtn.addEventListener('click', function () {
+    fileInput.value = ''; // Clear the file input
+    fileError.style.display = 'none'; // Hide any error messages
+});
+
+</script>
+            <!-- file upload script  -->
+            
+<script>
+    document.getElementById('submitBtn').addEventListener('click', function (e) {
+        const fileInput = document.getElementById('file_path');
+        const fileError = document.getElementById('fileError');
+
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const fileSize = file.size; // File size in bytes
+            const maxSize = 35 * 1024 * 1024; // 35 MB
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+            if (!validImageTypes.includes(file.type)) {
+                e.preventDefault(); // Prevent form submission
+                fileError.textContent = "Only JPG, PNG, and GIF images are allowed.";
+                fileError.style.display = 'block';
+            } else if (fileSize > maxSize) {
+                e.preventDefault(); // Prevent form submission
+                fileError.textContent = "Uploaded file exceeds the 35 MB limit.";
+                fileError.style.display = 'block';
+            } else {
+                fileError.style.display = 'none';
+            }
+        }
+    });
+</script>
 
             <script>
                 function openModal() {
@@ -248,7 +290,7 @@ if ($result && $result->num_rows > 0) {
                         if (xhr.status === 200 && xhr.responseText === 'success') {
                             // Update the status dynamically
                             document.getElementById('productStatus').textContent = "Pushed for Settlement";
-                            document.getElementById('pushForSettlementBtn').textContent = "Already Pushed";
+                            // document.getElementById('pushForSettlementBtn').textContent = "Already Pushed";
                             document.getElementById('pushForSettlementBtn').disabled = true;
                             document.querySelector('button[onclick="openModal()"]').disabled = true; // Disable "+" button
                         } else {
@@ -271,6 +313,27 @@ if ($result && $result->num_rows > 0) {
                 });
 
             </script>
+             <script>
+        // Get today's date
+        const today = new Date();
+
+        // Calculate the minimum date (2 days before today)
+        const minDate = new Date();
+        minDate.setDate(today.getDate() - 2);
+
+        // Format the dates to YYYY-MM-DD
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        // Set the min and max attributes for the input field
+        const dateInput = document.getElementById('date');
+        dateInput.min = formatDate(minDate);
+        dateInput.max = formatDate(today);
+    </script>
         </div>
 </body>
 

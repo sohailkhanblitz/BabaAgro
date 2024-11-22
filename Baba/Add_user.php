@@ -3,7 +3,7 @@ session_start();
 if (!isset($_SESSION['admin_mobile'])) {
     header("Location: login.php");
     exit();
-  }
+}
 include 'db_connection.php'; // Ensure this file contains your database connection code
 
 $admin = $_SESSION['afirst_name'];
@@ -27,25 +27,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_role = htmlspecialchars($_POST['user']);
     $password = htmlspecialchars($_POST['password']); // Get the password field
 
-    // Hash the password before storing (use bcrypt for secure hashing)
-    // $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-
     $createdby = $adminid;
     $updatedby = $adminid;
 
-    // Prepare and execute the insert query for user_master table
-    $stmt = $conn->prepare("INSERT INTO user_master (first_name, last_name, mobile, email, user_role, password, created_by, updated_by) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssss", $fname, $lname, $mobile, $email, $user_role, $password, $createdby, $updatedby);
+    // Check if the mobile number already exists
+    $check_stmt = $conn->prepare("SELECT COUNT(*) FROM user_master WHERE mobile = ?");
+    $check_stmt->bind_param("s", $mobile);
+    $check_stmt->execute();
+    $check_stmt->bind_result($mobile_exists);
+    $check_stmt->fetch();
+    $check_stmt->close();
 
-    if ($stmt->execute()) {
-        $message = "<p class='success-message'>User added successfully!</p>"; // Set success message
+    if ($mobile_exists > 0) {
+        $message = "<p class='error-message'>Error: Mobile number already exists!</p>"; // Set error message
     } else {
-        $message = "<p class='error-message'>Error: " . $stmt->error . "</p>"; // Set error message
-    }
+        // Prepare and execute the insert query for user_master table
+        $stmt = $conn->prepare("INSERT INTO user_master (first_name, last_name, mobile, email, user_role, password, created_by, updated_by) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssss", $fname, $lname, $mobile, $email, $user_role, $password, $createdby, $updatedby);
 
-    // Close the statement
-    $stmt->close();
+        if ($stmt->execute()) {
+            $message = "<p class='success-message'>User added successfully!</p>"; // Set success message
+        } else {
+            $message = "<p class='error-message'>Error: " . $stmt->error . "</p>"; // Set error message
+        }
+
+        // Close the statement
+        $stmt->close();
+    }
 
     // Close the database connection
     $conn->close();
@@ -69,9 +78,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <a href="./Sites.php">Sites</a>
       <a href="./Add_user.php">Add User</a>
       <a href="./Allowance.php">Add Allowance</a>
-      
-      
-
     </div>
 </nav>
 
@@ -105,7 +111,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button class="adduser" type="submit">Add User</button>
         </form>
         <?php echo $message; ?>
-
     </div>
 
 </body>
