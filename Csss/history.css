@@ -276,6 +276,11 @@ p {
 }
 
 
+button:disabled {
+  background: #ccc; /* Gray background */
+  color: #666; 
+}
+
 
 .expense{
 
