@@ -115,8 +115,8 @@ if ($result && $result->num_rows > 0) {
 <body>
     <div class="container">
         <div  class="back"> 
-            <a href="./Allotted_sites.php"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-        </div>    
+            <a href="javascript:history.back()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+</div>
     <div class="header">
         <h1>Site: <?= htmlspecialchars($site_name) ?></h1>
         <h2>Product: <?= htmlspecialchars($product_name) ?></h2>
