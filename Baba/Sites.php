@@ -206,7 +206,7 @@ if ($conn) {
       </table>
     </div>
     <?php else: ?>
-      <p>No sites found.</p>
+      <p class="nosite">No sites found.</p>
     <?php endif; ?>
   </div>
 

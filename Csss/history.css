@@ -32,12 +32,13 @@ body {
 .header h1 {
   font-size: 16px;
   color: #333;
-  /* margin-bottom: 5px; */
+ margin-top:32px;
 }
 
 .header h2 {
   font-size: 16px;
   color: #333;
+  margin-top:32px;
 
 
 }
@@ -292,3 +293,8 @@ p {
 
 
 
+.back{
+
+
+  float: left;
+}

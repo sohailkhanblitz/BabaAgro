@@ -91,9 +91,13 @@ if ($result && $result->num_rows > 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>History Page</title>
     <link rel="stylesheet" href="../Csss/history.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div class="container">
+        <div  class="back"> 
+            <a href="./Allotted_sites.php"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+        </div>    
     <div class="header">
         <h1>Site: <?= htmlspecialchars($site_name) ?></h1>
         <h2>Product: <?= htmlspecialchars($product_name) ?></h2>

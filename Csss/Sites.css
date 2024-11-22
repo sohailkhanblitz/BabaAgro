@@ -326,12 +326,21 @@ td {
 @media (max-width: 480px) {
   table {
     font-size: 12px;
-    width: 130%;
+    width: 150%;
   }
 
-  th, td {
-    padding: 8px;
+  th {
+    padding: 10px;
   }
+
+
+ td {
+    padding: 4px;
+  }
+  
+
+
+  
 
 
   body {
@@ -363,6 +372,11 @@ h3{
 }
 
 
+.nosite{
+
+
+  text-align: center;
+}
 
 
 
