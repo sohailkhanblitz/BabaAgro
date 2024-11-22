@@ -16,8 +16,8 @@
     <a href="./logout.php"><i class="fas fa-sign-out-alt"></i></a>
       <a href="./Home.php">Home</a>
       <a href="./Sites.php">Sites</a>
-      <a href="./Add_user.php">Add User</a>
-      <a href="./Allowance.php">Add Allowance</a>
+      <a href="./Add_user.php">User</a>
+      <a href="./Allowance.php">Allowance</a>
   
 
     </div>
