@@ -120,7 +120,6 @@ if ($result && $result->num_rows > 0) {
             <h2>Product:
                 <?= htmlspecialchars($product_name) ?>
             </h2>
-            <h2> Status: <span id="productStatus"><?= htmlspecialchars($product_status) ?></span></h2>
 
         </div>
 
