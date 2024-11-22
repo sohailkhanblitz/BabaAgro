@@ -46,6 +46,7 @@ $result = $stmt->get_result();
     <link rel="stylesheet" href="../Csss/transaction.css">
 </head>
 <body>
+    <div class="container">
     <h1>Allowances</h1>
     <p>User: <?php echo "$first_name $last_name ($mobile)"; ?></p>
     <table>
@@ -74,7 +75,7 @@ $result = $stmt->get_result();
             <?php endif; ?>
         </tbody>
     </table>
-
+    </div>
     <script>
         function redirectToHistory(siteId, spId, userId) {
             window.location.href = `history.php?site_id=${siteId}&sp_id=${spId}&user_id=${userId}`;

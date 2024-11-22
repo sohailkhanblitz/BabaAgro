@@ -1,189 +1,145 @@
-/* Reset CSS */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+}
+
+.container {
+  width: 60%;
+  margin: 20px auto;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  overflow: hidden;  /* Prevent any overflow from breaking layout */
+}
+
+/* Header Section */
+.header h1 {
+  font-size: 24px;
+  color: #333;
+  margin: 0;
+}
+
+.header p {
+  font-size: 18px;
+  color: #666;
+  margin: 10px 0;
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  table-layout: auto;  /* Allow table to auto-resize based on content */
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #4a90e2;
+  color: #fff;
+  font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+/* Button Styles */
+button {
+  background: linear-gradient(90deg, #357abd, #4a90e2);
+  color: #fff;
+  padding: 10px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 10px 0;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #357abd, #4a90e2);
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 555px) {
+  .container {
+    width: 90%;  /* Make the container wider on smaller screens */
+    padding: 10px;
   }
-  
-  /* Body Styles */
-  body {
-    background: linear-gradient(135deg, #f4f7fb, #e1e8f1);
-    color: #333;
-    font-size: 16px;
-    line-height: 1.6;
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  
-  /* Header Styles */
-  h1 {
-    text-align: center;
-    color: #444;
-    font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    letter-spacing: 0.5px;
-  }
-  
-  /* User Info Section */
-  p {
-    text-align: center;
-    font-size: 18px;
-    color: #555;
-    margin-bottom: 30px;
-    font-weight: 300;
-  }
-  
-  /* Table Styles */
+
   table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+    margin-top: 0;
+    width: 100%;  /* Make table take full width */
+    table-layout: auto;  /* Let the table resize with the content */
   }
-  
-  thead {
-    background: #4a90e2;
-    color: #fff;
-    font-weight: 500;
+
+  .header h1 {
+    font-size: 20px;
   }
-  
-  th, td {
-    padding: 12px 20px;
-    border: 1px solid #f0f0f0;
-    text-align: center;
+
+  .header p {
     font-size: 14px;
   }
-  
-  th {
-    background: #4a90e2;
-  }
-  
+
+  table,
+  th,
   td {
-    background: #ffffff;
-    color: #666;
+    font-size: 14px;
+    padding: 8px;
   }
-  
-  tr:hover {
-    background-color: #f9f9f9;
-    cursor: pointer;
+
+  button {
+    font-size: 14px;
+    padding: 8px 15px;
   }
-  
-  td, th {
-    transition: background-color 0.3s ease, color 0.3s ease;
+
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  input[type="file"] {
+    font-size: 14px;
   }
-  
-  /* Hover Effect on Table */
-  tr:hover td {
-    background-color: #f1f9ff;
-  }
-  
-  /* Smooth Transition for Table */
-  table, th, td {
-    transition: all 0.3s ease;
-  }
-  
-  /* Container Styles */
+}
+
+/* For smaller screens between 481px and 555px, make sure no horizontal scroll appears */
+@media (max-width: 555px) and (min-width: 481px) {
   .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.6s ease-in-out;
+    width: 90%;
+    overflow: visible;  /* Ensure no horizontal scroll */
   }
-  
-  /* Navbar Styles */
-  .navbar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 15px 20px;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  table {
+    width: 100%;  /* Make sure the table fills the width */
+    min-width: 100%;  /* Remove min-width to allow full table resizing */
   }
-  
-  .nav-items a {
-    color: #fff;
-    text-decoration: none;
-    margin: 0 20px;
-    font-size: 16px;
-    font-weight: 500;
-    position: relative;
-    transition: color 0.3s, transform 0.2s;
+
+  th, td {
+    word-wrap: break-word;  /* Prevent text overflow and allow wrapping */
   }
-  
-  .nav-items a:hover {
-    color: #4a90e2;
-    transform: translateY(-2px);
-  }
-  
-  /* Fade-In Animation */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  /* Responsive Styles */
-  @media (max-width: 768px) {
-    .navbar {
-      flex-direction: column;
-      padding: 10px 15px;
-    }
-  
-    .nav-items a {
-      margin: 10px 0;
-      font-size: 14px;
-    }
-  
-    .container {
-      width: 90%;
-      padding: 15px;
-      margin: 20px auto;
-    }
-  
-    h1 {
-      font-size: 24px;
-    }
-  
-    p {
-      font-size: 16px;
-    }
-  
-    table {
-      font-size: 14px;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .container {
-      padding: 10px;
-      margin: 10px auto;
-    }
-  
-    h1 {
-      font-size: 20px;
-    }
-  
-    p {
-      font-size: 14px;
-    }
-  
-    table {
-      font-size: 12px;
-    }
-  }
-  
+}
+
