@@ -95,7 +95,7 @@ echo "Welcome, " . htmlspecialchars($_SESSION['logged_in_user']);
             <thead>
                 <tr>
                     <th>Site - Product</th>
-                    <th>Total Allowance Amount</th>
+                    <th>Total Allowance</th>
                     <th>Total Expense</th>
                 </tr>
             </thead>

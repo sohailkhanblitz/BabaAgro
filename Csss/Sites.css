@@ -14,6 +14,13 @@ body {
   line-height: 1.6;
 }
 
+
+
+.site, .product, .status{
+  justify-content: center;
+  text-align: center;
+}
+
 /* Navbar Styles */
 .navbar {
   display: flex;

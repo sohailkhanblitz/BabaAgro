@@ -114,16 +114,22 @@ if ($result && $result->num_rows > 0) {
 
 <body>
     <div class="container">
-        <div  class="back"> 
+        <div class="back">
             <a href="javascript:history.back()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-</div>
-    <div class="header">
-        <h1>Site: <?= htmlspecialchars($site_name) ?></h1>
-        <h2>Product: <?= htmlspecialchars($product_name) ?></h2>
-        <h2> Status: <span id="productStatus"><?= htmlspecialchars($product_status) ?></span></h2>
-    </div>
+        </div>
+        <div class="header">
+            <h1>Site:
+                <?= htmlspecialchars($site_name) ?>
+            </h1>
+            <h2>Product:
+                <?= htmlspecialchars($product_name) ?>
+            </h2>
+            <h2> Status: <span id="productStatus">
+                    <?= htmlspecialchars($product_status) ?>
+                </span></h2>
+        </div>
 
-        
+
 
 
 
@@ -137,27 +143,38 @@ if ($result && $result->num_rows > 0) {
                 <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=expense"
                     class="<?= $view === 'expense' ? 'active' : '' ?>">Expense</a>
             </div>
+            <?php if ($view === 'expense' && $_SESSION['user_type'] !== 'admin') : ?>
+
+            <?php if ($product_status == 'Active') : ?>
+            <div class="expense">
+                <button onclick="openModal()">+</button>
+                <?php else : ?>
+                <button disabled>+</button>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+
+
         </div>
 
-        <?php if ($view === 'expense' && $_SESSION['user_type'] !== 'admin') : ?>
+        <!-- <?php if ($view === 'expense' && $_SESSION['user_type'] !== 'admin') : ?> -->
         <!-- <div class="expense">
                 <button onclick="openModal()">+</button>
             </div> -->
         <!-- Push for Settlement Button -->
-        <div class="status-update">
-            <?php if ($product_status == 'Active') : ?>
-            <div class="expense">
+        <!-- <div class="status-update"> -->
+            <!-- <?php if ($product_status == 'Active') : ?> -->
+            <!-- <div class="expense"> -->
                 <!-- add expense button  -->
-                <button onclick="openModal()">+</button>
+                <!-- <button onclick="openModal()">+</button> -->
                 <!-- </div> -->
-                <button id="pushForSettlementBtn" data-sp_id="<?= $sp_id ?>">Push for Settlement</button>
-                <?php else : ?>
-                <button disabled>+</button>
-                <button disabled id="pushForSettlementBtn" data-sp_id="<?= $sp_id ?>">Push for Settlement</button>
-                <?php endif; ?>
-            </div>
-            <?php endif; ?>
-<!-- </div> -->
+                <!-- <button id="pushForSettlementBtn" data-sp_id="<?= $sp_id ?>">Push for Settlement</button> -->
+                <!-- <?php else : ?> -->
+                <!-- <button disabled>+</button> -->
+                <!-- <button disabled id="pushForSettlementBtn" data-sp_id="<?= $sp_id ?>">Push for Settlement</button> -->
+                <!-- <?php endif; ?> -->
+            <!-- </div> -->
+            <!-- <?php endif; ?> -->
 
 
             <?php if (!empty($records)) : ?>
@@ -220,8 +237,10 @@ if ($result && $result->num_rows > 0) {
                         <input type="date" id="date" name="date" required><br><br>
                         <label for="file_path">Upload File</label>
                         <input type="file" id="file_path" name="file_path"><br><br>
-                        <button type="button" id="clearFileBtn" class="clear-btn" style="margin-right: 10px;">Clear File</button>
-                        <div id="fileError" style="color: red; display: none;">Uploaded file exceeds the 35 MB limit.</div>
+                        <button type="button" id="clearFileBtn" class="clear-btn" style="margin-right: 10px;">Clear
+                            File</button>
+                        <div id="fileError" style="color: red; display: none;">Uploaded file exceeds the 35 MB limit.
+                        </div>
                         <div class="modal-footer">
                             <button type="submit" id="submitBtn" class="save-btn">Save</button>
                             <button type="button" class="close-btn" onclick="closeModal()">Close</button>
@@ -229,46 +248,46 @@ if ($result && $result->num_rows > 0) {
                     </form>
                 </div>
             </div>
-<script>
-    // Get references to elements
-const fileInput = document.getElementById('file_path');
-const fileError = document.getElementById('fileError');
-const clearFileBtn = document.getElementById('clearFileBtn');
+            <script>
+                // Get references to elements
+                const fileInput = document.getElementById('file_path');
+                const fileError = document.getElementById('fileError');
+                const clearFileBtn = document.getElementById('clearFileBtn');
 
-// Clear File Button Logic
-clearFileBtn.addEventListener('click', function () {
-    fileInput.value = ''; // Clear the file input
-    fileError.style.display = 'none'; // Hide any error messages
-});
+                // Clear File Button Logic
+                clearFileBtn.addEventListener('click', function () {
+                    fileInput.value = ''; // Clear the file input
+                    fileError.style.display = 'none'; // Hide any error messages
+                });
 
-</script>
+            </script>
             <!-- file upload script  -->
-            
-<script>
-    document.getElementById('submitBtn').addEventListener('click', function (e) {
-        const fileInput = document.getElementById('file_path');
-        const fileError = document.getElementById('fileError');
 
-        if (fileInput.files.length > 0) {
-            const file = fileInput.files[0];
-            const fileSize = file.size; // File size in bytes
-            const maxSize = 35 * 1024 * 1024; // 35 MB
-            const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            <script>
+                document.getElementById('submitBtn').addEventListener('click', function (e) {
+                    const fileInput = document.getElementById('file_path');
+                    const fileError = document.getElementById('fileError');
 
-            if (!validImageTypes.includes(file.type)) {
-                e.preventDefault(); // Prevent form submission
-                fileError.textContent = "Only JPG, PNG, and GIF images are allowed.";
-                fileError.style.display = 'block';
-            } else if (fileSize > maxSize) {
-                e.preventDefault(); // Prevent form submission
-                fileError.textContent = "Uploaded file exceeds the 35 MB limit.";
-                fileError.style.display = 'block';
-            } else {
-                fileError.style.display = 'none';
-            }
-        }
-    });
-</script>
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+                        const fileSize = file.size; // File size in bytes
+                        const maxSize = 35 * 1024 * 1024; // 35 MB
+                        const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+                        if (!validImageTypes.includes(file.type)) {
+                            e.preventDefault(); // Prevent form submission
+                            fileError.textContent = "Only JPG, PNG, and GIF images are allowed.";
+                            fileError.style.display = 'block';
+                        } else if (fileSize > maxSize) {
+                            e.preventDefault(); // Prevent form submission
+                            fileError.textContent = "Uploaded file exceeds the 35 MB limit.";
+                            fileError.style.display = 'block';
+                        } else {
+                            fileError.style.display = 'none';
+                        }
+                    }
+                });
+            </script>
 
             <script>
                 function openModal() {
@@ -312,27 +331,27 @@ clearFileBtn.addEventListener('click', function () {
                 });
 
             </script>
-             <script>
-        // Get today's date
-        const today = new Date();
+            <script>
+                // Get today's date
+                const today = new Date();
 
-        // Calculate the minimum date (2 days before today)
-        const minDate = new Date();
-        minDate.setDate(today.getDate() - 2);
+                // Calculate the minimum date (2 days before today)
+                const minDate = new Date();
+                minDate.setDate(today.getDate() - 2);
 
-        // Format the dates to YYYY-MM-DD
-        const formatDate = (date) => {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        };
+                // Format the dates to YYYY-MM-DD
+                const formatDate = (date) => {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                };
 
-        // Set the min and max attributes for the input field
-        const dateInput = document.getElementById('date');
-        dateInput.min = formatDate(minDate);
-        dateInput.max = formatDate(today);
-    </script>
+                // Set the min and max attributes for the input field
+                const dateInput = document.getElementById('date');
+                dateInput.min = formatDate(minDate);
+                dateInput.max = formatDate(today);
+            </script>
         </div>
 </body>
 

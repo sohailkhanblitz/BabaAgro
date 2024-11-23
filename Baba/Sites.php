@@ -194,7 +194,7 @@ if ($conn) {
             <option value="Active" <?php echo ($site['status'] == 'Active') ? 'selected' : ''; ?>>Active</option>
             <option value="Inactive" <?php echo ($site['status'] == 'Inactive') ? 'selected' : ''; ?>>Inactive</option>
             
-            <option value="pushed for settlement" <?php echo ($site['status'] == 'pushed for settlement') ? 'selected' : ''; ?>>pushed for settlement</option>
+            <!-- <option value="pushed for settlement" <?php echo ($site['status'] == 'pushed for settlement') ? 'selected' : ''; ?>>pushed for settlement</option> -->
           </select>
         </form>
       </td>
@@ -245,6 +245,22 @@ if ($conn) {
     }
   </script>
 
+
+
+<script>
+    // Wait for the DOM to load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Find all elements with a success message
+        const successMessages = document.querySelectorAll('.site, .product, .status');
+        
+        // Set a timeout to remove them after 3 seconds
+        setTimeout(() => {
+            successMessages.forEach(message => {
+                message.style.display = 'none';
+            });
+        }, 3000); // 3000 milliseconds = 3 seconds
+    });
+</script>
 
 
 
