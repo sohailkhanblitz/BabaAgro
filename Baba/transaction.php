@@ -56,6 +56,7 @@ $result = $stmt->get_result();
                 <th>Product Name</th>
                 <th>Total Allowance</th>
                 <th>Total Expense</th>
+                <th>Avl Balance</th>
             </tr>
         </thead>
         <tbody>
@@ -66,6 +67,7 @@ $result = $stmt->get_result();
                         <td><?php echo $row['product_name']; ?></td>
                         <td><?php echo $row['total_allowance']; ?></td>
                         <td><?php echo $row['total_expense']; ?></td>
+                        <td><?php echo $row['total_allowance'] - $row['total_expense']; ?></td>
                     </tr>
                 <?php endwhile; ?>
             <?php else: ?>

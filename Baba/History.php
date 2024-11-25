@@ -80,7 +80,7 @@ if ($product_result && $product_result->num_rows > 0) {
 }
 
 // Set default view to "allowance"
-$view = isset($_GET['view']) ? $_GET['view'] : 'allowance';
+$view = isset($_GET['view']) ? $_GET['view'] : 'expense';
 
 // Fetch allowance or expense records based on view
 if ($view === 'allowance') {
@@ -119,11 +119,12 @@ if ($result && $result->num_rows > 0) {
         </div>
         <div class="header">
             <h1>Site:
-                <?= htmlspecialchars($site_name) ?>
+                <?= htmlspecialchars($site_name) ?> - <?= htmlspecialchars($product_name) ?>
+
             </h1>
-            <h2>Product:
+            <!-- <h2>Product:
                 <?= htmlspecialchars($product_name) ?>
-            </h2>
+            </h2> -->
             <h2> Status: <span id="productStatus">
                     <?= htmlspecialchars($product_status) ?>
                 </span></h2>
@@ -138,10 +139,12 @@ if ($result && $result->num_rows > 0) {
         </h2>
         <div class="toggle">
             <div class="toggle-container">
+            <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=expense"
+            class="<?= $view === 'expense' ? 'active' : '' ?>">Expense</a>
+            
                 <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=allowance"
                     class="<?= $view === 'allowance' ? 'active' : '' ?>">Allowance</a>
-                <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=expense"
-                    class="<?= $view === 'expense' ? 'active' : '' ?>">Expense</a>
+                
             </div>
             <?php if ($view === 'expense' && $_SESSION['user_type'] !== 'admin') : ?>
 
