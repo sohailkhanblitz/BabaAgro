@@ -97,6 +97,7 @@ echo "Welcome, " . htmlspecialchars($_SESSION['logged_in_user']);
                     <th>Site - Product</th>
                     <th>Total Allowance</th>
                     <th>Total Expense</th>
+                    <th>Avl Balance</th>
                 </tr>
             </thead>
             <tbody>
@@ -105,6 +106,12 @@ echo "Welcome, " . htmlspecialchars($_SESSION['logged_in_user']);
                         <td><?php echo htmlspecialchars($row['site_name'] . ' - ' . $row['product_name']); ?></td>
                         <td><?php echo htmlspecialchars(number_format($row['total_allowance'], 2)); ?></td>
                         <td><?php echo htmlspecialchars(number_format($row['total_expense'], 2)); ?></td>
+                        <td>
+                    <?php 
+                        $available_balance = $row['total_allowance'] - $row['total_expense']; 
+                        echo htmlspecialchars(number_format($available_balance, 2)); 
+                    ?>
+                </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

@@ -89,8 +89,8 @@ $conn->close();
     <a href="./logout.php"><i class="fas fa-sign-out-alt"></i></a>
       <a href="./Home.php">Home</a>
       <a href="./Sites.php">Sites</a>
-      <a href="./Add_user.php">Add User</a>
-      <a href="./Allowance.php">Add Allowance</a>
+      <a href="./Add_user.php">User</a>
+      <a href="./Allowance.php">Allowance</a>
 
     </div>
 </nav>
@@ -114,7 +114,9 @@ $conn->close();
         <br><br>
         <button class="info-btn" onclick="searchUser()">Search User</button>
     </div>
-
+    
+    
+    <h2 id="user" style="text-align:center"></h2>    
     <div class="user-info" id="user-info"></div>
 </div>
 
@@ -161,9 +163,10 @@ function executeSearch(adduser, mobile) {
     .then(data => {
         if (typeof data === 'string') {
             document.getElementById('user-info').innerHTML = `<p>${data}</p>`;
+            document.getElementById('user').innerHTML = '';
         } else {
             let userInfo = `
-                <h2 class="user">User Information</h2>
+                
                 <table border="1" cellpadding="10" cellspacing="0">
                     <tr>
                         <th>First Name</th>
@@ -186,6 +189,8 @@ function executeSearch(adduser, mobile) {
 
             userInfo += '</table>';
             document.getElementById('user-info').innerHTML = userInfo;
+            let infor='User Information'
+            document.getElementById('user').innerHTML = infor;
         }
     })
     .catch(error => console.error('Error:', error));

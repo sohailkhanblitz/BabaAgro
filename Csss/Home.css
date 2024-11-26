@@ -5,6 +5,9 @@
   box-sizing: border-box;
   font-family: 'Arial', sans-serif;
 }
+html {
+    min-height:100vh;
+}
 
 /* Body Styles */
 body {
@@ -19,7 +22,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgb(71 140 220);
   padding: 15px 20px;
   position: sticky;
   top: 0;
@@ -149,7 +152,7 @@ body {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
-  border-radius: 10px;
+  /*border-radius: 10px;*/
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -268,7 +271,7 @@ body {
   }
 
   .form-container h2 {
-    font-size: 16px;
+    font-size: 24px;
   }
 
   .form-container input,

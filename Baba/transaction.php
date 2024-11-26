@@ -72,7 +72,7 @@ $result = $stmt->get_result();
                 <?php endwhile; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="4">No records found.</td>
+                    <td colspan="5">No records found.</td>
                 </tr>
             <?php endif; ?>
         </tbody>

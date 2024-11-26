@@ -147,14 +147,17 @@ if ($result && $result->num_rows > 0) {
                 
             </div>
             <?php if ($view === 'expense' && $_SESSION['user_type'] !== 'admin') : ?>
-
-            <?php if ($product_status == 'Active') : ?>
+            
             <div class="expense">
-                <button onclick="openModal()">+</button>
-                <?php else : ?>
-                <button disabled>+</button>
-                <?php endif; ?>
+                <button id="plus" onclick="openModal()">+</button>
             </div>
+                <?php if ($product_status != 'Active') : ?>
+                <script>
+
+                    document.getElementById("plus").disabled=true;
+                </script>
+                <?php endif; ?>
+
             <?php endif; ?>
 
 
@@ -239,7 +242,7 @@ if ($result && $result->num_rows > 0) {
                         <label for="date">Date</label>
                         <input type="date" id="date" name="date" required><br><br>
                         <label for="file_path">Upload File</label>
-                        <input type="file" id="file_path" name="file_path"><br><br>
+                        <input type="file" id="file_path" name="file_path">
                         <button type="button" id="clearFileBtn" class="clear-btn" style="margin-right: 10px;">Clear
                             File</button>
                         <div id="fileError" style="color: red; display: none;">Uploaded file exceeds the 35 MB limit.

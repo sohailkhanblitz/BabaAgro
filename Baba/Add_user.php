@@ -110,7 +110,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             <button class="adduser" type="submit">Add User</button>
         </form>
-        <?php echo $message; ?>
+        
+        <?php if (!empty($message)) : ?>
+        <div id="message-container">
+            <?php echo $message; ?>
+        </div>
+        <script>
+            setTimeout(function() {
+                const messageDiv = document.getElementById("message-container");
+                if (messageDiv) {
+                    messageDiv.style.display = "none";
+                }
+            }, 3000);
+        </script>
+    <?php endif; ?>
     </div>
 
 </body>

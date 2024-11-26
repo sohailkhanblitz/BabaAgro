@@ -102,7 +102,7 @@ if (!isset($_SESSION['admin_mobile'])) {
 // Fetch products based on site_id
 if (isset($_POST['fetch_products'])) {
     $site_id = $_POST['site_id'];
-    $products = mysqli_query($conn, "SELECT sp_id, product_name FROM site_product WHERE site_id = '$site_id'");
+    $products = mysqli_query($conn, "SELECT sp_id, product_name FROM site_product WHERE site_id = '$site_id' AND status = 'Active'");
     echo "<option value=''>-- Select Product --</option>";
     while ($row = mysqli_fetch_assoc($products)) {
         echo "<option value='{$row['sp_id']}'>{$row['product_name']}</option>";

@@ -130,7 +130,7 @@ if ($conn) {
   </nav>
 
   <div class="container">
-    <h2 style=" text-align: center;">Add Site Details</h2>
+    <h2 style=" text-align: center;">Site Details</h2>
     <form action="" method="post">
       <label for="site_name">Site Name:</label>
       <input type="text" id="site_name" name="site_name" required>
@@ -138,7 +138,7 @@ if ($conn) {
       <label for="site_description">Site Description:</label>
       <textarea id="site_description" name="site_description" rows="4" required></textarea>
 
-      <button type="submit" name="submit">Add Site</button>
+      <button type="submit" name="submit"  style="margin-top: 10px;">Add Site</button>
     </form>
 
   
@@ -164,7 +164,7 @@ if ($conn) {
     <!-- Display sites in a table -->
    
     <?php if (!empty($sites)): ?>
-      <h3>Sites</h3>
+    <h3>Sites</h3>
       <div class="table-responsive">
       <table border="1">
       <thead>
@@ -194,7 +194,7 @@ if ($conn) {
             <option value="Active" <?php echo ($site['status'] == 'Active') ? 'selected' : ''; ?>>Active</option>
             <option value="Inactive" <?php echo ($site['status'] == 'Inactive') ? 'selected' : ''; ?>>Inactive</option>
             
-            <!-- <option value="pushed for settlement" <?php echo ($site['status'] == 'pushed for settlement') ? 'selected' : ''; ?>>pushed for settlement</option> -->
+            <!--<option value="pushed for settlement" <?php echo ($site['status'] == 'pushed for settlement') ? 'selected' : ''; ?>>pushed for settlement</option>-->
           </select>
         </form>
       </td>
@@ -229,7 +229,7 @@ if ($conn) {
           <option value="Inactive">Inactive</option>
         </select>
 
-        <button type="submit" name="add_product">Add Product</button>
+        <button style="margin-top:10px"  type="submit" name="add_product">Add Product</button>
       </form>
     </div>
   </div>
@@ -247,6 +247,7 @@ if ($conn) {
 
 
 
+
 <script>
     // Wait for the DOM to load
     document.addEventListener('DOMContentLoaded', function() {
@@ -261,10 +262,6 @@ if ($conn) {
         }, 3000); // 3000 milliseconds = 3 seconds
     });
 </script>
-
-
-
-
 
 
 

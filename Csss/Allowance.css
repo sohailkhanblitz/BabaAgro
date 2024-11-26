@@ -5,7 +5,9 @@
   box-sizing: border-box;
   font-family: 'Arial', sans-serif;
 }
-
+html {
+    min-height:100vh;
+}
 /* Body Styles */
 body {
   background: linear-gradient(135deg, #f0f8ff, #e6eef4);
@@ -19,7 +21,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgb(71 140 220);
   padding: 15px 20px;
   position: sticky;
   top: 0;
