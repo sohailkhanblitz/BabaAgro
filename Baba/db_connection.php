@@ -2,9 +2,9 @@
 date_default_timezone_set('Asia/Kolkata');
 
 $servername = "localhost"; // or your server name
-$username = "u580404085_root";
-$password = "Babaagro#123";
-$dbname = "u580404085_babaagrodb";
+$username = "root";
+$password = "";
+$dbname = "babaagrodb";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
