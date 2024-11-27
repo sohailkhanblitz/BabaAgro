@@ -24,6 +24,74 @@ $referrer = $_SESSION['stored_referrer'];
 // }
 
 
+
+
+
+
+
+
+// Retrieve the values from the URL using $_GET
+$site_id = $_GET['site_id'] ?? null;
+$sp_id = $_GET['sp_id'] ?? null;
+$user_id = $_GET['user_id'] ?? null;
+
+if ($site_id && $sp_id && $user_id) {
+    // Query to get the sum of allowances
+    $allowanceQuery = "SELECT SUM(al_amount) AS total_allowance 
+                       FROM allowance_master 
+                       WHERE user_id = ? AND sp_id = ?";
+    
+    // Prepare the allowance query
+    if ($stmt = $conn->prepare($allowanceQuery)) {
+        // Bind parameters
+        $stmt->bind_param("ii", $user_id, $sp_id); // 'i' for integer type
+        // Execute the statement
+        $stmt->execute();
+        // Bind result variables
+        $stmt->bind_result($totalAllowance);
+        // Fetch the result
+        $stmt->fetch();
+        $stmt->close();
+    } else {
+        echo "Error: " . $conn->error;
+    }
+
+    // Query to get the sum of expenses
+    $expenseQuery = "SELECT SUM(ex_amount) AS total_expense 
+                     FROM expense_master 
+                     WHERE user_id = ? AND sp_id = ?";
+
+    // Prepare the expense query
+    if ($stmt = $conn->prepare($expenseQuery)) {
+        // Bind parameters
+        $stmt->bind_param("ii", $user_id, $sp_id);
+        // Execute the statement
+        $stmt->execute();
+        // Bind result variables
+        $stmt->bind_result($totalExpense);
+        // Fetch the result
+        $stmt->fetch();
+        $stmt->close();
+    } else {
+        echo "Error: " . $conn->error;
+    }
+
+    // // Display the results
+    // echo "Total Allowance: " . htmlspecialchars($totalAllowance ?? 0) . "<br>";
+    // echo "Total Expense: " . htmlspecialchars($totalExpense ?? 0) . "<br>";
+    // echo "Balance: " . htmlspecialchars(($totalAllowance ?? 0) - ($totalExpense ?? 0)) . "<br>";
+
+} else {
+    echo "Invalid parameters in the URL.";
+}
+
+
+
+
+
+
+
+
 // inserting into the allowance master table 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['allowance_amount'])) {
@@ -166,6 +234,7 @@ if ($result && $result->num_rows > 0) {
 
 <body>
     <div class="container">
+        
         <div class="back">
     <?php if ($referrer): ?>
         <!-- Generate the anchor tag if the referrer exists -->
@@ -196,6 +265,14 @@ if ($result && $result->num_rows > 0) {
         <h2>
             <?= ucfirst($view) ?> Records
         </h2>
+        <div class="details">
+            <!-- <?php ?> -->
+        <div class="dete">Total Allowance <?= htmlspecialchars($totalAllowance);?>  </div>
+        <div class="dete">Total Expense <?= htmlspecialchars($totalExpense);?>  </div>
+        <div class="dete">Avl Balance <?= number_format($totalAllowance - $totalExpense, 2); ?></div>
+
+
+        </div>
         <div class="toggle">
             <div class="toggle-container">
                 <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=expense"

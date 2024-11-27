@@ -251,9 +251,27 @@ p {
   text-align: center;
 }
 
+.details{
+  display: flex;
+  
+}
 
+.dete{
+  font-size:20px;
+  margin:5px 50px;
+}
 
 @media (max-width: 480px) {
+
+  .details{
+    display:flex; font-size:12px
+  }
+  .dete{
+    font-size:12px;
+    margin: 1px;
+    
+  }
+
   .header h1 {
     font-size: 14px;
   }
