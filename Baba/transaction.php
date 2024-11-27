@@ -44,9 +44,13 @@ $result = $stmt->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Allowances</title>
     <link rel="stylesheet" href="../Csss/transaction.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div class="container">
+    <div class="back" style="display:flex;">
+            <a href="home.php"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+        </div>
     <h1>Allowances</h1>
     <p>User: <?php echo "$first_name $last_name ($mobile)"; ?></p>
     <table>

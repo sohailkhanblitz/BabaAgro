@@ -3,6 +3,58 @@
 include 'db_connection.php';
 session_start();
 
+// Check if the referrer is already stored in the session
+if (!isset($_SESSION['stored_referrer'])) {
+    // If referrer exists, store it
+    if (isset($_SERVER['HTTP_REFERER'])) {
+        $_SESSION['stored_referrer'] = $_SERVER['HTTP_REFERER'];
+    } else {
+        $_SESSION['stored_referrer'] = null; // Handle cases where referrer is not available
+    }
+}
+
+// Retrieve the stored referrer
+$referrer = $_SESSION['stored_referrer'];
+
+// Display the stored referrer
+// if ($referrer) {
+//     echo "Stored Referrer: " . htmlspecialchars($referrer);
+// } else {
+//     echo "No referrer was available to store.";
+// }
+
+
+// inserting into the allowance master table 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['allowance_amount'])) {
+    // Retrieve and sanitize input
+    $sp_id = intval($_POST['sp_id']);
+    $user_id = intval($_POST['user_id']);
+    $al_amount = floatval($_POST['allowance_amount']);
+    $status = 'pending'; // Default status for new allowances
+    $date = date('Y-m-d'); // Current date
+    $created_date = date('Y-m-d H:i:s');
+    $created_by = $_SESSION['admin_id']; // Assuming you have the logged-in user's ID
+    $updated_date = date('Y-m-d'); // No updates initially
+    $updated_by = $_SESSION['admin_id']; // No updates initially
+
+    // Insert into allowance_master table
+    $query = "INSERT INTO allowance_master 
+              (user_id, sp_id, al_amount, status, date, created_date, created_by, updated_date, updated_by) 
+              VALUES 
+              ($user_id, $sp_id, $al_amount, '$status', '$date', '$created_date', $created_by, NULL, NULL)";
+
+    if ($conn->query($query)) {
+        // Redirect to avoid resubmission issues
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?site_id=' . $_GET['site_id'] . '&sp_id=' . $sp_id . '&user_id=' . $user_id . '&view=allowance');
+        exit;
+    } else {
+        echo "Error: " . $conn->error;
+    }
+}
+
+
+
 // Handle form submission for expense addition
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ex_header'])) {
     // Retrieve and sanitize form inputs
@@ -115,11 +167,18 @@ if ($result && $result->num_rows > 0) {
 <body>
     <div class="container">
         <div class="back">
-            <a href="javascript:history.back()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+    <?php if ($referrer): ?>
+        <!-- Generate the anchor tag if the referrer exists -->
+            <a href="<?= htmlspecialchars($referrer); ?>"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+            <?php else : ?>
+        <!-- Show a message if no referrer is available -->
+        <p>No referrer available to redirect to.</p>
+            <?php endif ;?>
         </div>
         <div class="header">
             <h1>Site:
-                <?= htmlspecialchars($site_name) ?> - <?= htmlspecialchars($product_name) ?>
+                <?= htmlspecialchars($site_name) ?> -
+                <?= htmlspecialchars($product_name) ?>
 
             </h1>
             <!-- <h2>Product:
@@ -139,24 +198,40 @@ if ($result && $result->num_rows > 0) {
         </h2>
         <div class="toggle">
             <div class="toggle-container">
-            <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=expense"
-            class="<?= $view === 'expense' ? 'active' : '' ?>">Expense</a>
-            
+                <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=expense"
+                    class="<?= $view === 'expense' ? 'active' : '' ?>">Expense</a>
+
                 <a href="history.php?site_id=<?= $site_id ?>&sp_id=<?= $sp_id ?>&user_id=<?= $user_id ?>&view=allowance"
                     class="<?= $view === 'allowance' ? 'active' : '' ?>">Allowance</a>
-                
+
             </div>
+
+
             <?php if ($view === 'expense' && $_SESSION['user_type'] !== 'admin') : ?>
-            
+
             <div class="expense">
                 <button id="plus" onclick="openModal()">+</button>
             </div>
-                <?php if ($product_status != 'Active') : ?>
-                <script>
+            <?php if ($product_status != 'Active') : ?>
+            <script>
 
-                    document.getElementById("plus").disabled=true;
-                </script>
-                <?php endif; ?>
+                document.getElementById("plus").disabled = true;
+            </script>
+            <?php endif; ?>
+
+            <?php endif; ?>
+
+            <?php if ($view === 'allowance' && $_SESSION['user_type'] == 'admin') : ?>
+
+            <div class="expense">
+                <button id="alplus" onclick="openAModal()">+</button>
+            </div>
+            <?php if ($product_status != 'Active') : ?>
+            <script>
+
+                document.getElementById("alplus").disabled = true;
+            </script>
+            <?php endif; ?>
 
             <?php endif; ?>
 
@@ -169,200 +244,240 @@ if ($result && $result->num_rows > 0) {
             </div> -->
         <!-- Push for Settlement Button -->
         <!-- <div class="status-update"> -->
-            <!-- <?php if ($product_status == 'Active') : ?> -->
-            <!-- <div class="expense"> -->
-                <!-- add expense button  -->
-                <!-- <button onclick="openModal()">+</button> -->
-                <!-- </div> -->
-                <!-- <button id="pushForSettlementBtn" data-sp_id="<?= $sp_id ?>">Push for Settlement</button> -->
-                <!-- <?php else : ?> -->
-                <!-- <button disabled>+</button> -->
-                <!-- <button disabled id="pushForSettlementBtn" data-sp_id="<?= $sp_id ?>">Push for Settlement</button> -->
-                <!-- <?php endif; ?> -->
-            <!-- </div> -->
-            <!-- <?php endif; ?> -->
+        <!-- <?php if ($product_status == 'Active') : ?> -->
+        <!-- <div class="expense"> -->
+        <!-- add expense button  -->
+        <!-- <button onclick="openModal()">+</button> -->
+        <!-- </div> -->
+        <!-- <button id="pushForSettlementBtn" data-sp_id="<?= $sp_id ?>">Push for Settlement</button> -->
+        <!-- <?php else : ?> -->
+        <!-- <button disabled>+</button> -->
+        <!-- <button disabled id="pushForSettlementBtn" data-sp_id="<?= $sp_id ?>">Push for Settlement</button> -->
+        <!-- <?php endif; ?> -->
+        <!-- </div> -->
+        <!-- <?php endif; ?> -->
 
 
-            <?php if (!empty($records)) : ?>
-            <table>
-                <thead>
-                    <tr>
-                        <?php if ($view === 'allowance') : ?>
-                        <th>Amount</th>
-                        <th>Created Date</th>
-                        <?php else : ?>
-                        <th>Header</th>
-                        <th>Amount</th>
-                        <th>File Path</th>
-                        <th>Created Date</th>
-                        <?php endif; ?>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($records as $record) : ?>
-                    <tr>
-                        <?php if ($view === 'allowance') : ?>
-                        <td>
-                            <?= $record['al_amount'] ?>
-                        </td>
-                        <td>
-                            <?= $record['created_date'] ?>
-                        </td>
-                        <?php else : ?>
-                        <td>
-                            <?= $record['ex_header'] ?>
-                        </td>
-                        <td>
-                            <?= $record['ex_amount'] ?>
-                        </td>
-                        <td><a href="<?= $record['file_path'] ?>" target="_blank">View File</a></td>
-                        <td>
-                            <?= $record['created_date'] ?>
-                        </td>
-                        <?php endif; ?>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-            <?php else : ?>
-            <p>No records found.</p>
-            <?php endif; ?>
+        <?php if (!empty($records)) : ?>
+        <table>
+            <thead>
+                <tr>
+                    <?php if ($view === 'allowance') : ?>
+                    <th>Amount</th>
+                    <th>Created Date</th>
+                    <?php else : ?>
+                    <th>Header</th>
+                    <th>Amount</th>
+                    <th>File Path</th>
+                    <th>Created Date</th>
+                    <?php endif; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($records as $record) : ?>
+                <tr>
+                    <?php if ($view === 'allowance') : ?>
+                    <td>
+                        <?= $record['al_amount'] ?>
+                    </td>
+                    <td>
+                        <?= $record['created_date'] ?>
+                    </td>
+                    <?php else : ?>
+                    <td>
+                        <?= $record['ex_header'] ?>
+                    </td>
+                    <td>
+                        <?= $record['ex_amount'] ?>
+                    </td>
+                    <td><a href="<?= $record['file_path'] ?>" target="_blank">View File</a></td>
+                    <td>
+                        <?= $record['created_date'] ?>
+                    </td>
+                    <?php endif; ?>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php else : ?>
+        <p>No records found.</p>
+        <?php endif; ?>
 
-            <!-- Add Expense Modal -->
-            <div id="addExpenseModal">
-                <div class="modal-content">
-                    <form method="POST" enctype="multipart/form-data">
-                        <div class="modal-header">Add Expense</div>
-                        <input type="hidden" name="sp_id" value="<?= $sp_id ?>">
-                        <input type="hidden" name="user_id" value="<?= $user_id ?>">
-                        <label for="ex_header">Header</label>
-                        <input type="text" id="ex_header" name="ex_header" required><br><br>
-                        <label for="ex_amount">Amount</label>
-                        <input type="number" id="ex_amount" name="ex_amount" required><br><br>
-                        <label for="date">Date</label>
-                        <input type="date" id="date" name="date" required><br><br>
-                        <label for="file_path">Upload File</label>
-                        <input type="file" id="file_path" name="file_path">
-                        <button type="button" id="clearFileBtn" class="clear-btn" style="margin-right: 10px;">Clear
-                            File</button>
-                        <div id="fileError" style="color: red; display: none;">Uploaded file exceeds the 35 MB limit.
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" id="submitBtn" class="save-btn">Save</button>
-                            <button type="button" class="close-btn" onclick="closeModal()">Close</button>
-                        </div>
-                    </form>
-                </div>
+        <!-- Add Expense Modal -->
+        <div id="addExpenseModal">
+            <div class="modal-content">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="modal-header">Add Expense</div>
+                    <input type="hidden" name="sp_id" value="<?= $sp_id ?>">
+                    <input type="hidden" name="user_id" value="<?= $user_id ?>">
+                    <label for="ex_header">Header</label>
+                    <input type="text" id="ex_header" name="ex_header" required><br><br>
+                    <label for="ex_amount">Amount</label>
+                    <input type="number" id="ex_amount" name="ex_amount" required><br><br>
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" required><br><br>
+                    <label for="file_path">Upload File</label>
+                    <div class="new">
+                        <input type="file" id="file_path" name="file_path"><br><br>
+                        <button type="button" id="clearFileBtn" class="clear-btn"
+                            style="margin-right: 10px;">Clear</button>
+                    </div>
+                    <div id="fileError" style="color: red; display: none;">Uploaded file exceeds the 35 MB limit.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="submitBtn" class="save-btn">Save</button>
+                        <button type="button" class="close-btn" onclick="closeModal()">Close</button>
+                    </div>
+                </form>
             </div>
-            <script>
-                // Get references to elements
+        </div>
+
+        <!-- allowance modal  -->
+        <div id="addAllowanceModal">
+            <div class="modal-content">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="modal-header">Add Allowance</div>
+
+                    <!-- Hidden fields for sp_id and user_id -->
+                    <input type="hidden" name="sp_id" value="<?= $sp_id ?>">
+                    <input type="hidden" name="user_id" value="<?= $user_id ?>">
+
+                    <!-- Allowance Amount -->
+                    <label for="allowance_amount">Allowance Amount</label>
+                    <input type="number" id="allowance_amount" name="allowance_amount" required><br><br>
+
+
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="submit" id="submitBtn" class="save-btn">Save</button>
+                        <button type="button" class="close-btn" onclick="closeAModal()">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            // Get references to elements
+            const fileInput = document.getElementById('file_path');
+            const fileError = document.getElementById('fileError');
+            const clearFileBtn = document.getElementById('clearFileBtn');
+
+            // Clear File Button Logic
+            clearFileBtn.addEventListener('click', function () {
+                fileInput.value = ''; // Clear the file input
+                fileError.style.display = 'none'; // Hide any error messages
+            });
+
+        </script>
+        <!-- file upload script  -->
+
+        <script>
+            document.getElementById('submitBtn').addEventListener('click', function (e) {
                 const fileInput = document.getElementById('file_path');
                 const fileError = document.getElementById('fileError');
-                const clearFileBtn = document.getElementById('clearFileBtn');
 
-                // Clear File Button Logic
-                clearFileBtn.addEventListener('click', function () {
-                    fileInput.value = ''; // Clear the file input
-                    fileError.style.display = 'none'; // Hide any error messages
-                });
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const fileSize = file.size; // File size in bytes
+                    const maxSize = 35 * 1024 * 1024; // 35 MB
+                    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
 
-            </script>
-            <!-- file upload script  -->
-
-            <script>
-                document.getElementById('submitBtn').addEventListener('click', function (e) {
-                    const fileInput = document.getElementById('file_path');
-                    const fileError = document.getElementById('fileError');
-
-                    if (fileInput.files.length > 0) {
-                        const file = fileInput.files[0];
-                        const fileSize = file.size; // File size in bytes
-                        const maxSize = 35 * 1024 * 1024; // 35 MB
-                        const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
-
-                        if (!validImageTypes.includes(file.type)) {
-                            e.preventDefault(); // Prevent form submission
-                            fileError.textContent = "Only JPG, PNG, and GIF images are allowed.";
-                            fileError.style.display = 'block';
-                        } else if (fileSize > maxSize) {
-                            e.preventDefault(); // Prevent form submission
-                            fileError.textContent = "Uploaded file exceeds the 35 MB limit.";
-                            fileError.style.display = 'block';
-                        } else {
-                            fileError.style.display = 'none';
-                        }
+                    if (!validImageTypes.includes(file.type)) {
+                        e.preventDefault(); // Prevent form submission
+                        fileError.textContent = "Only JPG, PNG, and GIF images are allowed.";
+                        fileError.style.display = 'block';
+                    } else if (fileSize > maxSize) {
+                        e.preventDefault(); // Prevent form submission
+                        fileError.textContent = "Uploaded file exceeds the 35 MB limit.";
+                        fileError.style.display = 'block';
+                    } else {
+                        fileError.style.display = 'none';
                     }
-                });
-            </script>
-
-            <script>
-                function openModal() {
-                    document.getElementById('addExpenseModal').classList.add('active');
                 }
+            });
+        </script>
+        <script>
+            function openAModal() {
+                document.getElementById('addAllowanceModal').classList.add('active');
+            }
 
-                function closeModal() {
-                    document.getElementById('addExpenseModal').classList.remove('active');
-                }
+            function closeAModal() {
+                document.getElementById('addAllowanceModal').classList.remove('active');
+            }
 
-                // Update status dynamically when "Push for Settlement" is clicked
-                document.getElementById('pushForSettlementBtn').addEventListener('click', function () {
-                    var sp_id = this.getAttribute('data-sp_id');
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', '', true);
-                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                    xhr.onload = function () {
-                        if (xhr.status === 200 && xhr.responseText === 'success') {
-                            // Update the status dynamically
-                            document.getElementById('productStatus').textContent = "Pushed for Settlement";
-                            // document.getElementById('pushForSettlementBtn').textContent = "Already Pushed";
-                            document.getElementById('pushForSettlementBtn').disabled = true;
-                            document.querySelector('button[onclick="openModal()"]').disabled = true; // Disable "+" button
-                        } else {
-                            alert('Failed to update status.');
-                        }
-                    };
-                    xhr.send('update_status_sp_id=' + sp_id);
-                });
 
-                // Disable buttons initially if status is not "Active"
-                window.addEventListener('DOMContentLoaded', function () {
-                    var status = document.getElementById('productStatus').textContent.trim();
-                    if (status !== 'Active') {
+        </script>
+        <script>
+            function openModal() {
+                document.getElementById('addExpenseModal').classList.add('active');
+            }
+
+            function closeModal() {
+                document.getElementById('addExpenseModal').classList.remove('active');
+            }
+
+            // Update status dynamically when "Push for Settlement" is clicked
+            document.getElementById('pushForSettlementBtn').addEventListener('click', function () {
+                var sp_id = this.getAttribute('data-sp_id');
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function () {
+                    if (xhr.status === 200 && xhr.responseText === 'success') {
+                        // Update the status dynamically
+                        document.getElementById('productStatus').textContent = "Pushed for Settlement";
+                        // document.getElementById('pushForSettlementBtn').textContent = "Already Pushed";
                         document.getElementById('pushForSettlementBtn').disabled = true;
-                        var addExpenseButton = document.querySelector('button[onclick="openModal()"]');
-                        if (addExpenseButton) {
-                            addExpenseButton.disabled = true;
-                        }
+                        document.querySelector('button[onclick="openModal()"]').disabled = true; // Disable "+" button
+                    } else {
+                        alert('Failed to update status.');
                     }
-                });
-
-            </script>
-            <script>
-                // Get today's date
-                const today = new Date();
-
-                // Calculate the minimum date (2 days before today)
-                const minDate = new Date();
-                minDate.setDate(today.getDate() - 2);
-
-                // Format the dates to YYYY-MM-DD
-                const formatDate = (date) => {
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-                    const day = String(date.getDate()).padStart(2, '0');
-                    return `${year}-${month}-${day}`;
                 };
+                xhr.send('update_status_sp_id=' + sp_id);
+            });
 
-                // Set the min and max attributes for the input field
-                const dateInput = document.getElementById('date');
-                dateInput.min = formatDate(minDate);
-                dateInput.max = formatDate(today);
-            </script>
-        </div>
+            // Disable buttons initially if status is not "Active"
+            window.addEventListener('DOMContentLoaded', function () {
+                var status = document.getElementById('productStatus').textContent.trim();
+                if (status !== 'Active') {
+                    document.getElementById('pushForSettlementBtn').disabled = true;
+                    var addExpenseButton = document.querySelector('button[onclick="openModal()"]');
+                    if (addExpenseButton) {
+                        addExpenseButton.disabled = true;
+                    }
+                }
+            });
+
+        </script>
+        <script>
+            // Get today's date
+            const today = new Date();
+
+            // Calculate the minimum date (2 days before today)
+            const minDate = new Date();
+            minDate.setDate(today.getDate() - 2);
+
+            // Format the dates to YYYY-MM-DD
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            // Set the min and max attributes for the input field
+            const dateInput = document.getElementById('date');
+            dateInput.min = formatDate(minDate);
+            dateInput.max = formatDate(today);
+        </script>
+    </div>
 </body>
 
 </html>
 
 <?php
+// unset($_SESSION['stored_referrer']);
+
 $conn->close();
 ?>
