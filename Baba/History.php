@@ -367,7 +367,12 @@ if ($result && $result->num_rows > 0) {
                     <td>
                         <?= $record['ex_amount'] ?>
                     </td>
-                    <td><a href="<?= $record['file_path'] ?>" target="_blank">View File</a></td>
+                    <?php if (file_exists($record['file_path'])): ?>
+    <td><a href="<?= htmlspecialchars($record['file_path']); ?>" target="_blank">View File</a></td>
+<?php else: ?>
+    <td>NA</td>
+<?php endif; ?>
+
                     <td>
                         <?= $record['created_date'] ?>
                     </td>
